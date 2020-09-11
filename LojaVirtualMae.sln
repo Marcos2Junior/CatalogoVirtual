@@ -5,11 +5,13 @@ VisualStudioVersion = 16.0.30413.136
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "0 - Dominio", "0 - Dominio", "{43E81A9F-60E0-463C-B0A6-3A963CEF5F9E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LojaVirtualMae.Dominio", "LojaVirtualMae.Dominio\LojaVirtualMae.Dominio.csproj", "{02113C2E-471D-4CBE-B5AA-68022F29629A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LojaVirtualMae.Dominio", "LojaVirtualMae.Dominio\LojaVirtualMae.Dominio.csproj", "{02113C2E-471D-4CBE-B5AA-68022F29629A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1 - WEB", "1 - WEB", "{85F1748D-F70C-4E4C-BC64-9D4AE29871E4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LojaVirtualMae.WEB", "LojaVirtualMae.WEB\LojaVirtualMae.WEB.csproj", "{8B3B785F-A1E1-449D-8FE0-1D674604CD8B}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1.1 - API", "1.1 - API", "{D0CC300B-CA41-4362-B8D8-6B0FD0CB37A2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LojaVirtualMae.API", "LojaVirtualMae.API\LojaVirtualMae.API.csproj", "{128EDECA-739F-44B5-9F02-8D317FA87195}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,17 +23,18 @@ Global
 		{02113C2E-471D-4CBE-B5AA-68022F29629A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02113C2E-471D-4CBE-B5AA-68022F29629A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02113C2E-471D-4CBE-B5AA-68022F29629A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8B3B785F-A1E1-449D-8FE0-1D674604CD8B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8B3B785F-A1E1-449D-8FE0-1D674604CD8B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8B3B785F-A1E1-449D-8FE0-1D674604CD8B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8B3B785F-A1E1-449D-8FE0-1D674604CD8B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{128EDECA-739F-44B5-9F02-8D317FA87195}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{128EDECA-739F-44B5-9F02-8D317FA87195}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{128EDECA-739F-44B5-9F02-8D317FA87195}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{128EDECA-739F-44B5-9F02-8D317FA87195}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{02113C2E-471D-4CBE-B5AA-68022F29629A} = {43E81A9F-60E0-463C-B0A6-3A963CEF5F9E}
-		{8B3B785F-A1E1-449D-8FE0-1D674604CD8B} = {85F1748D-F70C-4E4C-BC64-9D4AE29871E4}
+		{D0CC300B-CA41-4362-B8D8-6B0FD0CB37A2} = {85F1748D-F70C-4E4C-BC64-9D4AE29871E4}
+		{128EDECA-739F-44B5-9F02-8D317FA87195} = {D0CC300B-CA41-4362-B8D8-6B0FD0CB37A2}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DF97F745-3EE7-4292-87FE-CDE6BC3AEDB1}

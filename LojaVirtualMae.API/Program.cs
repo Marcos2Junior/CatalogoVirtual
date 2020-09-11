@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace LojaVirtualMae.WEB
+namespace LojaVirtualMae.API
 {
     public class Program
     {

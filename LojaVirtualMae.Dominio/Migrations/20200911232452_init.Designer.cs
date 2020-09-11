@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LojaVirtualMae.Dominio.Migrations
 {
     [DbContext(typeof(LojaVirtualDbContexto))]
-    [Migration("20200911023414_first")]
-    partial class first
+    [Migration("20200911232452_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
