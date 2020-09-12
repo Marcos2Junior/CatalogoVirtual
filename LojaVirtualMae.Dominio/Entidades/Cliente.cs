@@ -19,10 +19,6 @@ namespace LojaVirtualMae.Dominio.Entidades
         public DateTime DataCadastro { get; set; }
         public int? EnderecoId { get; set; }
         public Endereco Endereco { get; set; }
-
-        //Coracaozinho em cima do produto e ficará exibindo em destaque para o cliente
-        public ICollection<Produto> Desejos { get; set; }
-        public ICollection<Pedido> Pedidos { get; set; }
         public Prepedido Prepedido { get; set; }
     }
 }

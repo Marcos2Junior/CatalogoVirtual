@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LojaVirtualMae.Dominio.Migrations
 {
     [DbContext(typeof(LojaVirtualDbContexto))]
-    [Migration("20200911232452_init")]
+    [Migration("20200912005833_init")]
     partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -204,9 +204,6 @@ namespace LojaVirtualMae.Dominio.Migrations
                     b.Property<int>("CategoriaId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("ClienteId")
-                        .HasColumnType("int");
-
                     b.Property<DateTime>("DataCadastro")
                         .HasColumnType("datetime(6)");
 
@@ -234,8 +231,6 @@ namespace LojaVirtualMae.Dominio.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CategoriaId");
-
-                    b.HasIndex("ClienteId");
 
                     b.HasIndex("DestaqueId");
 
@@ -285,7 +280,7 @@ namespace LojaVirtualMae.Dominio.Migrations
             modelBuilder.Entity("LojaVirtualMae.Dominio.Entidades.Pedido", b =>
                 {
                     b.HasOne("LojaVirtualMae.Dominio.Entidades.Cliente", "Cliente")
-                        .WithMany("Pedidos")
+                        .WithMany()
                         .HasForeignKey("ClienteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -313,10 +308,6 @@ namespace LojaVirtualMae.Dominio.Migrations
                         .HasForeignKey("CategoriaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.HasOne("LojaVirtualMae.Dominio.Entidades.Cliente", null)
-                        .WithMany("Desejos")
-                        .HasForeignKey("ClienteId");
 
                     b.HasOne("LojaVirtualMae.Dominio.Entidades.Destaque", "Destaque")
                         .WithMany("Produtos")

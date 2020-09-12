@@ -28,8 +28,8 @@ namespace LojaVirtualMae.API.Modelos
         [Required(ErrorMessage = "{0} Obrigatório")]
         [Range(1, 50000, ErrorMessage = " {0} deve ser entre {1} a {2}")]
         public int Estoque { get; set; }
-        public CategoriaModelo Categoria { get; set; }
-        public DestaqueModelo Destaque { get; set; }
+        public int CategoriaId { get; set; }
+        public int? DestaqueId { get; set; }
         public DateTime DataCadastro { get; set; }
         public bool Ativo { get; set; }
     }

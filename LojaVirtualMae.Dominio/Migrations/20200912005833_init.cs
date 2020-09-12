@@ -69,6 +69,40 @@ namespace LojaVirtualMae.Dominio.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Produtos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
+                    Nome = table.Column<string>(nullable: true),
+                    Descricao = table.Column<string>(nullable: true),
+                    PrecoAtual = table.Column<decimal>(nullable: false),
+                    PrecoAntigo = table.Column<decimal>(nullable: true),
+                    DescontoPorcentagem = table.Column<decimal>(nullable: true),
+                    Estoque = table.Column<int>(nullable: false),
+                    CategoriaId = table.Column<int>(nullable: false),
+                    DestaqueId = table.Column<int>(nullable: true),
+                    DataCadastro = table.Column<DateTime>(nullable: false),
+                    Ativo = table.Column<bool>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Produtos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Produtos_Categorias_CategoriaId",
+                        column: x => x.CategoriaId,
+                        principalTable: "Categorias",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Produtos_Destaques_DestaqueId",
+                        column: x => x.DestaqueId,
+                        principalTable: "Destaques",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Clientes",
                 columns: table => new
                 {
@@ -143,47 +177,6 @@ namespace LojaVirtualMae.Dominio.Migrations
                         principalTable: "Clientes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Produtos",
-                columns: table => new
-                {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Nome = table.Column<string>(nullable: true),
-                    Descricao = table.Column<string>(nullable: true),
-                    PrecoAtual = table.Column<decimal>(nullable: false),
-                    PrecoAntigo = table.Column<decimal>(nullable: true),
-                    DescontoPorcentagem = table.Column<decimal>(nullable: true),
-                    Estoque = table.Column<int>(nullable: false),
-                    CategoriaId = table.Column<int>(nullable: false),
-                    DestaqueId = table.Column<int>(nullable: true),
-                    DataCadastro = table.Column<DateTime>(nullable: false),
-                    Ativo = table.Column<bool>(nullable: false),
-                    ClienteId = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Produtos", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Produtos_Categorias_CategoriaId",
-                        column: x => x.CategoriaId,
-                        principalTable: "Categorias",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Produtos_Clientes_ClienteId",
-                        column: x => x.ClienteId,
-                        principalTable: "Clientes",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Produtos_Destaques_DestaqueId",
-                        column: x => x.DestaqueId,
-                        principalTable: "Destaques",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -272,11 +265,6 @@ namespace LojaVirtualMae.Dominio.Migrations
                 column: "CategoriaId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Produtos_ClienteId",
-                table: "Produtos",
-                column: "ClienteId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Produtos_DestaqueId",
                 table: "Produtos",
                 column: "DestaqueId");
@@ -303,10 +291,10 @@ namespace LojaVirtualMae.Dominio.Migrations
                 name: "MetodoEntregas");
 
             migrationBuilder.DropTable(
-                name: "Categorias");
+                name: "Clientes");
 
             migrationBuilder.DropTable(
-                name: "Clientes");
+                name: "Categorias");
 
             migrationBuilder.DropTable(
                 name: "Destaques");
