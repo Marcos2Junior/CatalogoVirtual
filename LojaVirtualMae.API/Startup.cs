@@ -33,6 +33,8 @@ namespace LojaVirtualMae.API
             services.AddScoped<IProdutoRepositorio, ProdutoRepositorio>();
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+
+            services.AddCors();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -45,7 +47,11 @@ namespace LojaVirtualMae.API
 
             app.UseHttpsRedirection();
 
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            app.UseStaticFiles();
             app.UseRouting();
+
+           
 
             app.UseAuthorization();
 
