@@ -1,41 +1,278 @@
 <div class="d-flex">
   <div class="form-inline mr-auto">
     <div class="form-group mb-2">
-      <label class="mr-2">Filtro:</label> <input type="text" class="form-control mr-2" placeholder="buscar"
-        [(ngModel)]="filtroLista">
+      <label class="mr-2">Filtro:</label>
+      <input
+        type="text"
+        class="form-control mr-2"
+        placeholder="buscar"
+        [(ngModel)]="filtroLista"
+      />
     </div>
   </div>
   <div>
-    <button class="btn btn-outline-primary">
-      <i class="fa fa-plus-circle"></i>&nbsp;
-      Novo Evento
+    <button class="btn btn-outline-primary" (click)="novoProduto(template)">
+      <i class="fa fa-plus-circle"></i>&nbsp; Novo Produto
     </button>
   </div>
 </div>
 
 <table class="table table-striped">
-  <thead>
+  <thead class="thead-light">
     <tr>
-     <th>ID</th>
-     <th>Nome</th>
-     <th>Categoria</th>
-     <th>Ativo</th>
-     <th>Opções</th>
+      <th>ID</th>
+      <th>Nome</th>
+      <th>Categoria</th>
+      <th>Status</th>
+      <th>Detalhes</th>
     </tr>
   </thead>
   <tbody *ngIf="produtos && produtos.length">
     <tr *ngFor="let produto of produtoFiltro">
-      <th>{{produto.id}}</th>
-      <td>{{produto.nome}}</td>
-      <td>{{produto.categoria.nome}}</td>
-      <td>{{produto.ativo ? 'ATIVO': 'DESATIVADO'}}</td>
+      <th>{{ produto.id }}</th>
+      <td>{{ produto.nome }}</td>
+      <td>{{ produto.categoria.nome }}</td>
+      <td>{{ produto.ativo ? "ATIVO" : "DESATIVADO" }}</td>
+      <td>
+        <button class="btn btn-info" (click)="editarProduto(produto, template)"><i class="fas fa-info-circle"></i></button>
+      </td>
     </tr>
   </tbody>
-  <tfoot>
-    <td colspan="5" class="text-center">
-      <h4>
-        Nenhum produto encontrado!
-      </h4>
+  <tfoot *ngIf="produtos && !produtoFiltro.length">
+    <td colspan="6" class="text-center">
+      <h4>Nenhum produto encontrado!</h4>
     </td>
   </tfoot>
 </table>
+
+<div
+  bsModal
+  #template="bs-modal"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="dialog-sizes-name1"
+>
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 id="dialog-sizes-name1" class="modal-title pull-left">
+          Large modal
+        </h4>
+        <button
+          type="button"
+          class="close pull-right"
+          (click)="template.hide()"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="registerForm">
+          <div class="form-row">
+            <div class="form-group col-md-2">
+              <label>Identificação</label>
+              <input type="text" class="form-control"
+              [ngClass]="{
+                'is-invalid':
+                  registerForm.get('id').errors &&
+                  registerForm.get('id').touched
+              }"
+              formControlName="id"
+              disabled />
+            </div>
+            <div class="form-group col-md-10">
+              <label>Nome</label>
+              <input
+                type="text"
+                class="form-control"
+                [ngClass]="{
+                  'is-invalid':
+                    registerForm.get('nome').errors &&
+                    registerForm.get('nome').touched
+                }"
+                formControlName="nome"
+                placeholder="Insira o nome do produto"
+              />
+              <div
+                *ngIf="
+                  registerForm.get('nome').hasError('required') &&
+                  registerForm.get('nome').touched
+                "
+                class="invalid-feedback"
+              >
+                Nome é obrigatório
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-12">
+              <label>Descrição</label>
+              <textarea
+                class="form-control"
+                [ngClass]="{
+                  'is-invalid':
+                    registerForm.get('descricao').errors &&
+                    registerForm.get('descricao').touched
+                }"
+                formControlName="descricao"
+                rows="3"
+                placeholder="Insira uma descrição para o produto"
+              ></textarea>
+              <div
+                *ngIf="
+                  registerForm.get('descricao').hasError('required') &&
+                  registerForm.get('descricao').touched
+                "
+                class="invalid-feedback"
+              >
+                Descrição é obrigatória
+              </div>
+              
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label>Preço atual</label>
+              <input
+                type="text"
+                class="form-control"
+                [ngClass]="{
+                  'is-invalid':
+                    registerForm.get('precoAtual').errors &&
+                    registerForm.get('precoAtual').touched
+                }"
+                formControlName="precoAtual"
+                placeholder="Insira o atual preço do produto"
+              />
+              <div
+                *ngIf="
+                  registerForm.get('precoAtual').hasError('max') &&
+                  registerForm.get('precoAtual').touched
+                "
+                class="invalid-feedback"
+              >
+                Preço atual é obrigatório
+              </div>
+            </div>
+            <div class="form-group col-md-6">
+              <label>Preço antigo</label>
+              <input
+                type="text"
+                class="form-control"
+                [ngClass]="{
+                  'is-invalid':
+                    registerForm.get('precoAntigo').errors &&
+                    registerForm.get('precoAntigo').touched
+                }"
+                formControlName="precoAntigo"
+                placeholder="Existe um preço antigo?"
+              />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label>Desconto %</label>
+              <input
+                type="number"
+                class="form-control"
+                [ngClass]="{
+                  'is-invalid':
+                    registerForm.get('descontoPorcentagem').errors &&
+                    registerForm.get('descontoPorcentagem').touched
+                }"
+                formControlName="descontoPorcentagem"
+                placeholder="Existe desconto?"
+              />
+              <div
+                *ngIf="
+                  registerForm.get('descontoPorcentagem').hasError('min') ||
+                  (registerForm.get('descontoPorcentagem').hasError('max') &&
+                    registerForm.get('descontoPorcentagem').touched)
+                "
+                class="invalid-feedback"
+              >
+                Defina um desconto válido
+              </div>
+            </div>
+            <div class="form-group col-md-6">
+              <label>Quantidade em Estoque</label>
+              <input
+                type="number"
+                class="form-control"
+                [ngClass]="{
+                  'is-invalid':
+                    registerForm.get('estoque').errors &&
+                    registerForm.get('estoque').touched
+                }"
+                formControlName="estoque"
+              />
+              <div
+                *ngIf="
+                  registerForm.get('estoque').hasError('min') ||
+                  (registerForm.get('estoque').hasError('max') &&
+                    registerForm.get('estoque').touched)
+                "
+                class="invalid-feedback"
+              >
+                Defina um numero entre 0 e 9999.
+              </div>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group col-md-6">
+              <label>Categoria</label>
+              <select
+                class="form-control"
+                [ngClass]="{
+                  'is-invalid':
+                    registerForm.get('categoria').errors &&
+                    registerForm.get('categoria').touched
+                }"
+                formControlName="categoria"
+              >
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+              </select>
+              <div
+                *ngIf="
+                  registerForm.get('categoria').hasError('required') &&
+                  registerForm.get('categoria').touched
+                "
+                class="invalid-feedback"
+              >
+                Categoria é obrigatório.
+              </div>
+            </div>
+            <div class="form-group col-md-6">
+              <label>Destaque</label>
+              <select class="form-control" formControlName="destaque">
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
+      <div class="modal-footer d-flex">
+        <button class="btn btn-secondary" (click)="template.hide()">
+          Fechar
+        </button>
+        <button
+          class="btn btn-primary ml-auto"
+          [disabled]="!registerForm.valid"
+        >
+          Salvar Alterações
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
