@@ -32,7 +32,7 @@ namespace LojaVirtualMae.API.Controllers
                 var produtos = await _produtoRepositorio.ObterTodosAsync();
                 if (produtos.Any())
                 {
-                    return Ok(ProdutosToModels(produtos));
+                    return Ok(_mapper.Map<ProdutoModelo[]>(produtos));
                 }
 
                 return NotFound();
@@ -56,7 +56,7 @@ namespace LojaVirtualMae.API.Controllers
                     return NotFound();
                 }
 
-                return Ok(ProdutoToModel(produto));
+                return Ok(_mapper.Map<ProdutoModelo>(produto));
             }
             catch (Exception ex)
             {
@@ -96,11 +96,11 @@ namespace LojaVirtualMae.API.Controllers
 
             try
             {
-                var produto = ModelToProduto(produtoModelo);
+                var produto = _mapper.Map<Produto>(produtoModelo);
 
                 if (await _produtoRepositorio.AdicionarAsync(produto))
                 {
-                    var produtoModeloRetorno = ProdutoToModel(produto);
+                    var produtoModeloRetorno = _mapper.Map<ProdutoModelo>(produto);
 
                     return CreatedAtAction("GetProduto", new { id = produto.Id }, produtoModeloRetorno);
                 }
@@ -140,12 +140,6 @@ namespace LojaVirtualMae.API.Controllers
                 return ErrorException(ex);
             }
         }
-
-        private ProdutoModelo ProdutoToModel(Produto produto) => _mapper.Map<ProdutoModelo>(produto);
-
-        private IEnumerable<ProdutoModelo> ProdutosToModels(IEnumerable<Produto> produtos) => _mapper.Map<IEnumerable<ProdutoModelo>>(produtos);
-
-        private Produto ModelToProduto(ProdutoModelo produtoModelo) => _mapper.Map<Produto>(produtoModelo);
 
         private IActionResult ErrorException(Exception exception)
         {

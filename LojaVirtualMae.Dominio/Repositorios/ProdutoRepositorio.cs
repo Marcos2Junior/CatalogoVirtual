@@ -56,12 +56,18 @@ namespace LojaVirtualMae.Dominio.Repositorios
 
         public async Task<Produto> ObterPorIdAsync(int idProduto)
         {
-            return await _lojaContext.Produtos.FirstOrDefaultAsync(x => x.Id == idProduto);
+            return await _lojaContext.Produtos
+                .Include(x => x.Categoria)
+                .Include(x => x.Destaque)
+                .FirstOrDefaultAsync(x => x.Id == idProduto);
         }
 
         public async Task<IEnumerable<Produto>> ObterTodosAsync()
         {
-            return await _lojaContext.Produtos.ToListAsync();
+            return await _lojaContext.Produtos
+                .Include(x => x.Categoria)
+                .Include(x => x.Destaque)
+                .ToListAsync();
         }
     }
 }
