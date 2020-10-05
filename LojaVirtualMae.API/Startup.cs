@@ -13,6 +13,11 @@ using Microsoft.Extensions.Hosting;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using LojaVirtualMae.Dominio.Entidades;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using System.Text.Json;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 
 namespace LojaVirtualMae.API
 {
@@ -46,7 +51,29 @@ namespace LojaVirtualMae.API
             builder.AddRoleManager<RoleManager<Role>>();
             builder.AddSignInManager<SignInManager<Usuario>>();
 
-            services.AddAuthentication();
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.ASCII
+                            .GetBytes(Configuration.GetSection("AppSettings:Token").Value)),
+                        ValidateIssuer = false,
+                        ValidateAudience = false
+                    };
+                }
+                );
+
+            _ = services.AddMvc(options =>
+            {
+                var policy = new AuthorizationPolicyBuilder()
+                    .RequireAuthenticatedUser()
+                    .Build();
+                options.Filters.Add(new AuthorizeFilter(policy));
+            })
+                .AddJsonOptions(opt => opt.JsonSerializerOptions.ReadCommentHandling = JsonCommentHandling.Skip);
+
 
             services.AddScoped<ILojaVirtualMaeRepositorio, LojaVirtualRepositorio>();
             services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
@@ -70,7 +97,6 @@ namespace LojaVirtualMae.API
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseStaticFiles();
             app.UseRouting();
-
 
             app.UseAuthentication();
 
