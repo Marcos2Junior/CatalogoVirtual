@@ -14,12 +14,12 @@ namespace LojaVirtualMae.API.Controllers
     [ApiController]
     public class ProdutoesController : ControllerBase
     {
-        private readonly IProdutoRepositorio _produtoRepositorio;
+        private readonly IProdutoRepositorio _repositorio;
         private readonly IMapper _mapper;
 
         public ProdutoesController(IProdutoRepositorio produtoRepositorio, IMapper mapper)
         {
-            _produtoRepositorio = produtoRepositorio;
+            _repositorio = produtoRepositorio;
             _mapper = mapper;
         }
 
@@ -29,7 +29,7 @@ namespace LojaVirtualMae.API.Controllers
         {
             try
             {
-                var produtos = await _produtoRepositorio.ObterTodosAsync();
+                var produtos = await _repositorio.GetAllProdutosAsync();
                 if (produtos.Any())
                 {
                     return Ok(_mapper.Map<ProdutoModelo[]>(produtos));
@@ -49,7 +49,7 @@ namespace LojaVirtualMae.API.Controllers
         {
             try
             {
-                var produto = await _produtoRepositorio.ObterPorIdAsync(id);
+                var produto = await _repositorio.GetProdutoByIdAsync(id);
 
                 if (produto == null)
                 {
@@ -68,15 +68,24 @@ namespace LojaVirtualMae.API.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for
         // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProduto(int id, Produto produto)
+        public async Task<IActionResult> PutProduto(int id, ProdutoModelo produtoModelo)
         {
             try
             {
-                if (await _produtoRepositorio.Existe(id))
-                {
-                    await _produtoRepositorio.AtualizarAsync(produto);
+                var produto = await _repositorio.GetProdutoByIdAsync(id);
 
-                    return NoContent();
+                if (produto != null)
+                {
+                    _ = _mapper.Map(produtoModelo, produto);
+
+                    if (await _repositorio.AtualizarAsync(produto))
+                    {
+                        return NoContent();
+                    }
+                    else
+                    {
+                        return BadRequest();
+                    }
                 }
 
                 return NotFound();
@@ -93,12 +102,11 @@ namespace LojaVirtualMae.API.Controllers
         [HttpPost]
         public async Task<IActionResult> PostProduto(ProdutoModelo produtoModelo)
         {
-
             try
             {
                 var produto = _mapper.Map<Produto>(produtoModelo);
 
-                if (await _produtoRepositorio.AdicionarAsync(produto))
+                if (await _repositorio.AdicionarAsync(produto))
                 {
                     var produtoModeloRetorno = _mapper.Map<ProdutoModelo>(produto);
 
@@ -119,11 +127,11 @@ namespace LojaVirtualMae.API.Controllers
         {
             try
             {
-                var produto = await _produtoRepositorio.ObterPorIdAsync(id);
+                var produto = await _repositorio.GetProdutoByIdAsync(id);
 
                 if (produto != null)
                 {
-                    if (await _produtoRepositorio.DeletarAsync(produto))
+                    if (await _repositorio.DeletarAsync(produto))
                     {
                         return NoContent();
                     }

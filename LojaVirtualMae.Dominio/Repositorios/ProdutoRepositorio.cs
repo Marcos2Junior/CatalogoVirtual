@@ -7,54 +7,13 @@ using System.Threading.Tasks;
 
 namespace LojaVirtualMae.Dominio.Repositorios
 {
-    public class ProdutoRepositorio : IProdutoRepositorio
+    public class ProdutoRepositorio : LojaVirtualRepositorio, IProdutoRepositorio
     {
-        private readonly LojaVirtualDbContexto _lojaContext;
-
-        public ProdutoRepositorio(LojaVirtualDbContexto lojaVirtualContexto)
+        public ProdutoRepositorio(LojaVirtualDbContexto lojaVirtualContexto) : base(lojaVirtualContexto)
         {
-            _lojaContext = lojaVirtualContexto;
         }
 
-        public async Task<bool> AdicionarAsync(Produto produto)
-        {
-            await _lojaContext.AddAsync(produto);
-            await _lojaContext.SaveChangesAsync();
-
-            return true;
-        }
-
-        public async Task<bool> AtualizarAsync(Produto produto)
-        {
-            if (_lojaContext.Entry(produto).State == EntityState.Detached)
-            {
-                _lojaContext.Attach(produto);
-                _lojaContext.Entry(produto).State = EntityState.Modified;
-            }
-            else
-            {
-                _lojaContext.Update(produto);
-            }
-
-            await _lojaContext.SaveChangesAsync();
-
-            return true;
-        }
-
-        public async Task<bool> DeletarAsync(Produto produto)
-        {
-            _lojaContext.Remove(produto);
-            await _lojaContext.SaveChangesAsync();
-
-            return true;
-        }
-
-        public async Task<bool> Existe(int idProduto)
-        {
-            return await _lojaContext.Produtos.AnyAsync(x => x.Id == idProduto);
-        }
-
-        public async Task<Produto> ObterPorIdAsync(int idProduto)
+        public async Task<Produto> GetProdutoByIdAsync(int idProduto)
         {
             return await _lojaContext.Produtos
                 .Include(x => x.Categoria)
@@ -62,7 +21,7 @@ namespace LojaVirtualMae.Dominio.Repositorios
                 .FirstOrDefaultAsync(x => x.Id == idProduto);
         }
 
-        public async Task<IEnumerable<Produto>> ObterTodosAsync()
+        public async Task<List<Produto>> GetAllProdutosAsync()
         {
             return await _lojaContext.Produtos
                 .Include(x => x.Categoria)
