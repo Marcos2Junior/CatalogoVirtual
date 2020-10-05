@@ -3,14 +3,16 @@ using System;
 using LojaVirtualMae.Dominio.DbContexto;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LojaVirtualMae.Dominio.Migrations
 {
     [DbContext(typeof(LojaVirtualDbContexto))]
-    partial class LojaVirtualDbContextoModelSnapshot : ModelSnapshot
+    [Migration("20201005121707_identity")]
+    partial class identity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -6,7 +6,7 @@ namespace LojaVirtualMae.Dominio.Entidades
     {
         public int Id { get; set; }
         public int ClienteId { get; set; }
-        public Cliente Cliente { get; set; }
+        public Usuario Cliente { get; set; }
         public string Observacao { get; set; }
         public int MetodoEntregaId { get; set; }
         public MetodoEntrega MetodoEntrega { get; set; }
