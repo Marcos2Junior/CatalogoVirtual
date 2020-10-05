@@ -14,7 +14,7 @@ namespace LojaVirtualMae.API.AutoMapper
             CreateMap<Usuario, UsuarioModelo>().ForMember(dest => dest.Endereco, opt =>
             {
                 opt.MapFrom(src => src.Endereco);
-            });
+            }).ReverseMap();
 
             CreateMap<Endereco, EnderecoModelo>().ReverseMap();
         }

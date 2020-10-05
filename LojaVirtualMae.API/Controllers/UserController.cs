@@ -43,6 +43,7 @@ namespace LojaVirtualMae.API.Controllers
         }
 
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetAll()
         {
             try
@@ -53,7 +54,7 @@ namespace LojaVirtualMae.API.Controllers
                     return Ok(_mapper.Map<UsuarioLoginModelo[]>(usuarios));
                 }
 
-                return NotFound();
+                return NotFound(new UsuarioModelo());
             }
             catch (Exception ex)
             {
@@ -118,16 +119,54 @@ namespace LojaVirtualMae.API.Controllers
             {
                 var user = _mapper.Map<Usuario>(userModel);
 
-                var result = await _userManager.CreateAsync(user, userModel.Password);
+                var userName = await _repositorio.GetAllUsuariosAsync();
 
-                var userToReturn = _mapper.Map<UsuarioModelo>(user);
+                user.UserName = await _repositorio.GetNewUserNameAsync(userModel.Nome);
+                user.DataCadastro = DateTime.Now;
 
-                if (result.Succeeded)
+                bool CPFDuplicado = userModel.CPF != null && await _repositorio.GetUsuarioByCPFAsync(userModel.CPF) != null;
+
+                IEnumerable<IdentityError> identityErrors = null;
+
+                if (CPFDuplicado)
                 {
-                    return Created("GetUser", userToReturn);
+                    identityErrors = new IdentityError[]
+                    {
+                        new IdentityError
+                        {
+                            Code = "DuplicateCPF",
+                            Description = $"Ja existe registro do CPF {userModel.CPF} em nossa base de dados"
+                        }
+                    };
+                }
+                else
+                {
+                    IdentityResult result = await _userManager.CreateAsync(user, userModel.Password);
+
+                    var userToReturn = _mapper.Map<UsuarioModelo>(user);
+
+                    if (result.Succeeded)
+                    {
+                        return Created("GetUser", userToReturn);
+                    }
+
+                    identityErrors = result.Errors;
                 }
 
-                return BadRequest(result.Errors);
+                foreach (var item in identityErrors)
+                {
+                    switch (item.Code)
+                    {
+                        case "DuplicateEmail":
+                            item.Description = $"Ja existe registro do email {userModel.Email} em nossa base de dados";
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+
+                return BadRequest(identityErrors);
             }
             catch (Exception ex)
             {
@@ -141,22 +180,26 @@ namespace LojaVirtualMae.API.Controllers
         {
             try
             {
-                var user = await _userManager.FindByNameAsync(userLoginModel.UserName);
+                bool GetByCPF = !userLoginModel.EmailCPF.Where(x => char.IsLetter(x)).Any();
 
-                var result = await _signInManager.CheckPasswordSignInAsync(user, userLoginModel.Password, false);
+                Usuario usuario = GetByCPF ?
+                    await _repositorio.GetUsuarioByCPFAsync(userLoginModel.EmailCPF) :
+                    await _userManager.FindByEmailAsync(userLoginModel.EmailCPF);
 
-                if (result.Succeeded)
+                if (usuario != null)
                 {
-                    var appUser = await _userManager.Users
-                        .FirstOrDefaultAsync(u => u.NormalizedUserName == userLoginModel.UserName.ToUpper());
+                    var result = await _signInManager.CheckPasswordSignInAsync(usuario, userLoginModel.Password, false);
 
-                    var userToReturn = _mapper.Map<UsuarioLoginModelo>(appUser);
-
-                    return Ok(new
+                    if (result.Succeeded)
                     {
-                        token = GenerateJWToken(appUser).Result,
-                        user = userToReturn
-                    });
+                        var userToReturn = _mapper.Map<UsuarioLoginModelo>(usuario);
+
+                        return Ok(new
+                        {
+                            token = GenerateJWToken(usuario).Result,
+                            user = userToReturn
+                        });
+                    }
                 }
 
                 return Unauthorized();

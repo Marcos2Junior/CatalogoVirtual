@@ -3,14 +3,16 @@ using System;
 using LojaVirtualMae.Dominio.DbContexto;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace LojaVirtualMae.Dominio.Migrations
 {
     [DbContext(typeof(LojaVirtualDbContexto))]
-    partial class LojaVirtualDbContextoModelSnapshot : ModelSnapshot
+    [Migration("20201005181601_identityUsuarioIgnore")]
+    partial class identityUsuarioIgnore
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -306,10 +308,6 @@ namespace LojaVirtualMae.Dominio.Migrations
                         .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
                         .HasMaxLength(256);
 
-                    b.Property<string>("NormalizedUserName")
-                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
-                        .HasMaxLength(256);
-
                     b.Property<string>("PasswordHash")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
@@ -325,20 +323,12 @@ namespace LojaVirtualMae.Dominio.Migrations
                     b.Property<string>("TelefoneFixo")
                         .HasColumnType("longtext CHARACTER SET utf8mb4");
 
-                    b.Property<string>("UserName")
-                        .HasColumnType("varchar(256) CHARACTER SET utf8mb4")
-                        .HasMaxLength(256);
-
                     b.HasKey("Id");
 
                     b.HasIndex("EnderecoId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasName("EmailIndex");
-
-                    b.HasIndex("NormalizedUserName")
-                        .IsUnique()
-                        .HasName("UserNameIndex");
 
                     b.ToTable("AspNetUsers");
                 });

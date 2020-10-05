@@ -36,6 +36,7 @@ namespace LojaVirtualMae.API
             services.AddControllers();
             services.AddDbContext<LojaVirtualDbContexto>(x => x.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
 
+           
             IdentityBuilder builder = services.AddIdentityCore<Usuario>(options =>
             {
                 options.Password.RequireDigit = false;
@@ -43,6 +44,8 @@ namespace LojaVirtualMae.API
                 options.Password.RequireLowercase = false;
                 options.Password.RequireUppercase = false;
                 options.Password.RequiredLength = 4;
+
+                options.User.RequireUniqueEmail = true;
             });
 
             builder = new IdentityBuilder(builder.UserType, typeof(Role), builder.Services);

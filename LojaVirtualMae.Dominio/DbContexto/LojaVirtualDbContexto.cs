@@ -43,6 +43,13 @@ namespace LojaVirtualMae.Dominio.DbContexto
                     .HasForeignKey(ur => ur.UserId)
                     .IsRequired();
             });
+
+            modelBuilder.Entity<Usuario>().Ignore(c => c.PhoneNumberConfirmed)
+                                          .Ignore(c => c.TwoFactorEnabled)
+                                          .Ignore(c => c.SecurityStamp)
+                                          .Ignore(c => c.LockoutEnd)
+                                          .Ignore(c => c.LockoutEnabled);
+
         }
     }
 }
