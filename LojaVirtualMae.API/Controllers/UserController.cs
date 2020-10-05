@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using LojaVirtualMae.API.Modelos;
 using LojaVirtualMae.Dominio.Entidades;
+using LojaVirtualMae.Dominio.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -26,16 +27,87 @@ namespace LojaVirtualMae.API.Controllers
         private readonly UserManager<Usuario> _userManager;
         private readonly SignInManager<Usuario> _signInManager;
         private readonly IMapper _mapper;
+        private readonly IUsuarioRepositorio _repositorio;
 
         public UserController(IConfiguration config,
                               UserManager<Usuario> userManager,
                               SignInManager<Usuario> signInManager,
-                              IMapper mapper)
+                              IMapper mapper,
+                              IUsuarioRepositorio usuarioRepositorio)
         {
             _signInManager = signInManager;
             _mapper = mapper;
             _config = config;
             _userManager = userManager;
+            _repositorio = usuarioRepositorio;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            try
+            {
+                var usuarios = await _repositorio.GetAllUsuariosAsync();
+                if (usuarios.Any())
+                {
+                    return Ok(_mapper.Map<UsuarioLoginModelo[]>(usuarios));
+                }
+
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return ErrorException(ex);
+            }
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUsuario(int id)
+        {
+            try
+            {
+                var usuario = await _repositorio.GetUsuarioByIdAsync(id);
+
+                if (usuario == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(_mapper.Map<UsuarioModelo>(usuario));
+            }
+            catch (Exception ex)
+            {
+                return ErrorException(ex);
+            }
+        }
+
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutUsuario(int id, UsuarioModelo usuarioModelo)
+        {
+            try
+            {
+                var usuario = await _repositorio.GetUsuarioByIdAsync(id);
+
+                if (usuario != null)
+                {
+                    _ = _mapper.Map(usuarioModelo, usuario);
+
+                    if (await _repositorio.AtualizarAsync(usuario))
+                    {
+                        return NoContent();
+                    }
+                    else
+                    {
+                        return BadRequest();
+                    }
+                }
+
+                return NotFound();
+            }
+            catch (Exception ex)
+            {
+                return ErrorException(ex);
+            }
         }
 
         [HttpPost("Register")]
@@ -59,7 +131,7 @@ namespace LojaVirtualMae.API.Controllers
             }
             catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, $"Banco Dados Falhou {ex.Message}");
+                return ErrorException(ex);
             }
         }
 
@@ -91,7 +163,7 @@ namespace LojaVirtualMae.API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, $"Banco Dados Falhou {ex.Message}");
+                return ErrorException(ex);
             }
         }
 
@@ -127,6 +199,13 @@ namespace LojaVirtualMae.API.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return tokenHandler.WriteToken(token);
+        }
+
+        private IActionResult ErrorException(Exception exception)
+        {
+            //adiionar log
+
+            return StatusCode(500, "Ocorreu um erro interno com o tratamento dos dados.");
         }
 
     }
