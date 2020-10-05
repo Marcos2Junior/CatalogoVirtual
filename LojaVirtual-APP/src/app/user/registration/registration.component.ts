@@ -20,25 +20,21 @@ export class RegistrationComponent implements OnInit {
             , private toastr: ToastrService) { }
 
   ngOnInit() {
-    if (localStorage.getItem('token') != null) {
-      this.router.navigate(['/index']);
-    }
-
     this.validation();
   }
 
   validation() {
     this.registerForm = this.fb.group({
       nome: ['', Validators.required],
-      cpf: ['', Validators.nullValidator],
+      cpf: [],
       apelido: ['', Validators.minLength(4)],
-      telefoneFixo: ['', Validators.nullValidator],
-      phoneNumber: ['', Validators.nullValidator],
-      receberEmail: ['', Validators.required],
-      receberMensagem: ['', Validators.required],
-      imagem: ['', Validators.nullValidator],
+      nascimento: [],
+      telefoneFixo: [],
+      phoneNumber: [],
+      receberEmail: [],
+      receberMensagem: [],
+      imagem: [],
       email: ['', [Validators.required, Validators.email]],
-      userName: ['', Validators.required],
       passwords: this.fb.group({
       password: ['', [Validators.required, Validators.minLength(4)]],
       confirmPassword: ['', Validators.required]

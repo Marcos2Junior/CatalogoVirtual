@@ -2,7 +2,6 @@ import { Endereco } from './Endereco';
 
 export interface User {
     id: number;
-    userName: string;
     nome: string;
     cpf: string;
     apelido: string;
