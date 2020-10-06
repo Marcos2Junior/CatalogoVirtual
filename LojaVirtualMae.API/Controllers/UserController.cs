@@ -43,9 +43,28 @@ namespace LojaVirtualMae.API.Controllers
             _userManager = userManager;
             _repositorio = usuarioRepositorio;
         }
-
+        /// <summary>
+        /// Seleciona usuario que está autenticado
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("auth")]
+        public async Task<IActionResult> GetUserAuth()
+        {
+            try
+            {
+                return Ok(_mapper.Map<UsuarioModelo>(await _userManager.GetUserAsync(User)));
+            }
+            catch (Exception ex)
+            {
+                return ErrorException(ex);
+            }
+        }
+        /// <summary>
+        /// Selecionta todos os registros
+        /// Definir Role Admin
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
-        [AllowAnonymous]
         public async Task<IActionResult> GetAll()
         {
             try
@@ -64,6 +83,12 @@ namespace LojaVirtualMae.API.Controllers
             }
         }
 
+        /// <summary>
+        /// Seleciona usuario por id
+        /// Utilizar apenas quando for exibir detalhes sobre o usuario, ou seja qualquer usuario pode soliticar o perfil de outro usuario
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUsuario(int id)
         {
@@ -246,12 +271,9 @@ namespace LojaVirtualMae.API.Controllers
 
                     if (result.Succeeded)
                     {
-                        var userToReturn = _mapper.Map<UsuarioLoginModelo>(usuario);
-
                         return Ok(new
                         {
-                            token = GenerateJWToken(usuario).Result,
-                            user = userToReturn
+                            token = GenerateJWToken(usuario).Result
                         });
                     }
                 }
@@ -293,9 +315,11 @@ namespace LojaVirtualMae.API.Controllers
 
             var tokenHandler = new JwtSecurityTokenHandler();
 
-            var token = tokenHandler.CreateToken(tokenDescriptor);
+            var securityToken = tokenHandler.CreateToken(tokenDescriptor);
 
-            return tokenHandler.WriteToken(token);
+            var token = tokenHandler.WriteToken(securityToken);
+
+            return token;
         }
 
         private IActionResult ErrorException(Exception exception)

@@ -15,7 +15,6 @@ namespace LojaVirtualMae.API.AutoMapper
             {
                 opt.MapFrom(src => src.Endereco);
             }).ReverseMap();
-
             CreateMap<Endereco, EnderecoModelo>().ReverseMap();
         }
     }

@@ -15,6 +15,10 @@ export class UsuarioService {
     return this.http.get<User[]>(this.baseURL);
   }
 
+  getUserAuth(): Observable<User> {
+    return this.http.get<User>(`${this.baseURL}auth`);
+  }
+
   getUsuarioById(id: number): Observable<User> {
     return this.http.get<User>(`${this.baseURL}/${id}`);
   }
