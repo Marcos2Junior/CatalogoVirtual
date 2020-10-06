@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -111,6 +113,59 @@ namespace LojaVirtualMae.API.Controllers
             }
         }
 
+        [HttpPost("upload")]
+        [AllowAnonymous]
+        public IActionResult Upload()
+        {
+            try
+            {
+                var file = Request.Form.Files[0];
+                var folderName = Path.Combine("Resources", "images");
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+
+                if (file.Length > 0)
+                {
+                    var filename = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName;
+                    var fullPath = Path.Combine(pathToSave, filename.Replace("\"", " ").Trim());
+
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
+
+                    return Ok();
+                }
+                else
+                {
+                    return BadRequest("Erro ao tentar realizar upload");
+                }
+            }
+            catch (System.Exception ex)
+            {
+                return this.StatusCode(StatusCodes.Status500InternalServerError, $"Banco Dados Falhou {ex.Message}");
+            }
+        }
+
+        private Usuario AlteraImage(Usuario usuario)
+        {
+            if (usuario.Imagem != null)
+            {
+                var fileInfo = new FileInfo(Path.Combine("Resources", "images", usuario.Imagem));
+
+                if (fileInfo.Exists)
+                {
+                    if (!string.IsNullOrEmpty(usuario.UserName))
+                    {
+                        usuario.Imagem = $"{usuario.UserName}.{fileInfo.Extension}";
+                        System.IO.File.Move(fileInfo.FullName, Path.Combine("Resources", "images", usuario.Imagem));
+                        System.IO.File.Delete(fileInfo.FullName);
+                    }
+                }
+            }
+
+            return usuario;
+        }
+
         [HttpPost("Register")]
         [AllowAnonymous]
         public async Task<IActionResult> Register(UsuarioModelo userModel)
@@ -119,10 +174,9 @@ namespace LojaVirtualMae.API.Controllers
             {
                 var user = _mapper.Map<Usuario>(userModel);
 
-                var userName = await _repositorio.GetAllUsuariosAsync();
-
                 user.UserName = await _repositorio.GetNewUserNameAsync(userModel.Nome);
                 user.DataCadastro = DateTime.Now;
+                user = AlteraImage(user);
 
                 bool CPFDuplicado = userModel.CPF != null && await _repositorio.GetUsuarioByCPFAsync(userModel.CPF) != null;
 

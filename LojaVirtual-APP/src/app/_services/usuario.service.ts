@@ -4,13 +4,12 @@ import { Observable } from 'rxjs';
 import { User } from '../_models/User';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UsuarioService {
+  baseURL = 'http://localhost:53589/api/user/';
 
-baseURL = 'https://localhost:5001/api/user';
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getAllUsuario(): Observable<User[]> {
     return this.http.get<User[]>(this.baseURL);
@@ -20,7 +19,7 @@ baseURL = 'https://localhost:5001/api/user';
     return this.http.get<User>(`${this.baseURL}/${id}`);
   }
 
-  postUsuario(user: User){
+  postUsuario(user: User) {
     return this.http.post(this.baseURL, user);
   }
 
@@ -30,5 +29,13 @@ baseURL = 'https://localhost:5001/api/user';
 
   deleteUsuario(id: number) {
     return this.http.delete(`${this.baseURL}/${id}`);
+  }
+
+  postUpload(file: File, name: string) {
+    const fileToUplaod = <File>file[0];
+    const formData = new FormData();
+    formData.append('file', fileToUplaod, name);
+
+    return this.http.post(`${this.baseURL}upload`, formData);
   }
 }

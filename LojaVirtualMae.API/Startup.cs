@@ -36,7 +36,7 @@ namespace LojaVirtualMae.API
             services.AddControllers();
             services.AddDbContext<LojaVirtualDbContexto>(x => x.UseMySql(Configuration.GetConnectionString("DefaultConnection")));
 
-           
+
             IdentityBuilder builder = services.AddIdentityCore<Usuario>(options =>
             {
                 options.Password.RequireDigit = false;
@@ -95,7 +95,7 @@ namespace LojaVirtualMae.API
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
 
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseStaticFiles();

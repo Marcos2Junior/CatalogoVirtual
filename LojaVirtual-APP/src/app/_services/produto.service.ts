@@ -4,15 +4,14 @@ import { Observable } from 'rxjs';
 import { Produto } from '../_models/Produto';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ProdutoService {
-  baseURL = 'https://localhost:5001/api/produto';
+  baseURL = 'http://localhost:53589/api/user/';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   getAllProduto(): Observable<Produto[]> {
     return this.http.get<Produto[]>(this.baseURL);
   }
-
 }
