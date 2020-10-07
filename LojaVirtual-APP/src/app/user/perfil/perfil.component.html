@@ -1,3 +1,72 @@
-<p>
-  perfil works!
-</p>
+<div
+  bsModal
+  #template="bs-modal"
+  id="exampleModal"
+  class="modal"
+  tabindex="-1"
+  role="dialog"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Olá, {{ firstName }}!</h5>
+      </div>
+      <div class="modal-body" style="max-height: 400px; overflow: auto">
+        <p>
+          Você acabou de concluir o seu cadastro e agora você pode interagir
+          muito melhor com a gente! <br /><br />
+          Está se perguntando como pode ficar melhor?<br /><br />
+          Olha só o que você pode fazer:<br />
+        </p>
+        <ul>
+          <li>Encomendar produtos que não possui estoque.</li>
+          <li>
+            Fazer pedidos, escolhendo a melhor forma de entrega e pagamento.
+          </li>
+          <li>Avaliar produtos.</li>
+          <li>Receber por e-mail ou WhatsApp nossas novidades.</li>
+          <li>
+            Enviar suas dúvidas ou sugestões através da nossa central de
+            atendimento.
+          </li>
+        </ul>
+        <p>
+          Muito bem, agora que você está ligadinho em todas as nossas
+          funcionalidades, não deixe de aproveita-las, combinado?<br /><br />
+          Antes de continuar, você gostaria de ser chamado por um outro nome ou
+          apelido?<br />
+          <input
+            type="text"
+            [(ngModel)]="apelido"
+            maxlength="10"
+            class="form-control"
+            placeholder="Digite seu apelido"
+          /><br />
+          Sempre que precisarmos falar com você, vamos dar preferência em usar
+          esse nome.<br />
+          Você pode alterar a qualquer momento visitando os detalhes de seu
+          perfil.<br /><br />
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button
+          type="button"
+          class="btn btn-secondary"
+          data-dismiss="modal"
+          aria-label="Close"
+          (click)="gravaApelido()">
+          Entendido!
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<button
+  type="button"
+  class="btn btn-primary"
+  data-toggle="modal"
+  data-target="#exampleModal"
+>
+  Launch demo modal
+</button>

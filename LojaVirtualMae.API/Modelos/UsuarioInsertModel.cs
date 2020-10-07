@@ -3,14 +3,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace LojaVirtualMae.API.Modelos
 {
-    public class UsuarioModelo
+    public class UsuarioInsertModel
     {
-        public int Id { get; set; }
-
         [Required(ErrorMessage = "Nome é obrigatório"), StringLength(50, MinimumLength = 5, ErrorMessage = "Nome deve ter 4 a 50 caracteres")]
         public string Nome { get; set; }
         public string CPF { get; set; }
-        public string Apelido { get; set; }
+        [DataType(DataType.Date, ErrorMessage = "Insira uma data de nascimento válida.")]
         public DateTime Nascimento { get; set; }
         public string TelefoneFixo { get; set; }
 

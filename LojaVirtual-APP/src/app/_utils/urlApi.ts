@@ -1,5 +1,5 @@
 export class UrlApi {
-    private static readonly UrlBase = 'http://localhost:5000/';
+    private static readonly UrlBase = 'http://localhost:53589/';
     public static readonly UrlUser = UrlApi.UrlBase + 'api/user/';
     public static readonly UrlProduto = UrlApi.UrlBase + 'api/produto/';
 

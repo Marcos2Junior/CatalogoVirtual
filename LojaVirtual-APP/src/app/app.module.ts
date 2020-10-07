@@ -27,8 +27,9 @@ import { CarouselComponent } from './top/carousel/carousel.component';
 
 
 
+
 @NgModule({
-  declarations: [	
+  declarations: [
     AppComponent,
     ProdutoComponent,
     NavComponent,

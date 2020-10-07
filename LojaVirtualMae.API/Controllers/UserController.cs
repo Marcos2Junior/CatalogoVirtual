@@ -14,6 +14,7 @@ using LojaVirtualMae.Dominio.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -52,7 +53,7 @@ namespace LojaVirtualMae.API.Controllers
         {
             try
             {
-                return Ok(_mapper.Map<UsuarioModelo>(await _userManager.GetUserAsync(User)));
+                return Ok(_mapper.Map<UsuarioViewModel>(await _userManager.GetUserAsync(User)));
             }
             catch (Exception ex)
             {
@@ -75,7 +76,7 @@ namespace LojaVirtualMae.API.Controllers
                     return Ok(_mapper.Map<UsuarioLoginModelo[]>(usuarios));
                 }
 
-                return NotFound(new UsuarioModelo());
+                return NotFound(new UsuarioInsertModel());
             }
             catch (Exception ex)
             {
@@ -101,7 +102,37 @@ namespace LojaVirtualMae.API.Controllers
                     return NotFound();
                 }
 
-                return Ok(_mapper.Map<UsuarioModelo>(usuario));
+                return Ok(_mapper.Map<UsuarioViewModel>(usuario));
+            }
+            catch (Exception ex)
+            {
+                return ErrorException(ex);
+            }
+        }
+
+        [HttpPatch("{id}")]
+        public async Task<IActionResult> PatchUsuario(int id, [FromBody] JsonPatchDocument<UsuarioInsertModel> pathUsuarioModelo)
+        {
+            try
+            {
+                var usuario = await _repositorio.GetUsuarioByIdAsync(id);
+
+                if (usuario != null)
+                {
+                    var usuarioModelo = _mapper.Map<UsuarioInsertModel>(usuario);
+                    pathUsuarioModelo.ApplyTo(usuarioModelo);
+
+                    usuario = _mapper.Map(usuarioModelo, usuario);
+
+                    if (await _repositorio.AtualizarAsync(usuario))
+                    {
+                        return NoContent();
+                    }
+
+                    return BadRequest();
+                }
+
+                return NotFound();
             }
             catch (Exception ex)
             {
@@ -110,7 +141,7 @@ namespace LojaVirtualMae.API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutUsuario(int id, UsuarioModelo usuarioModelo)
+        public async Task<IActionResult> PutUsuario(int id, UsuarioViewModel usuarioModelo)
         {
             try
             {
@@ -193,7 +224,7 @@ namespace LojaVirtualMae.API.Controllers
 
         [HttpPost("Register")]
         [AllowAnonymous]
-        public async Task<IActionResult> Register(UsuarioModelo userModel)
+        public async Task<IActionResult> Register(UsuarioInsertModel userModel)
         {
             try
             {
@@ -222,7 +253,7 @@ namespace LojaVirtualMae.API.Controllers
                 {
                     IdentityResult result = await _userManager.CreateAsync(user, userModel.Password);
 
-                    var userToReturn = _mapper.Map<UsuarioModelo>(user);
+                    var userToReturn = _mapper.Map<UsuarioViewModel>(user);
 
                     if (result.Succeeded)
                     {

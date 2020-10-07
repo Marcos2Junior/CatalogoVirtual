@@ -9,39 +9,40 @@ import { UrlApi } from '../../_utils/urlApi';
 @Component({
   selector: 'app-nav',
   templateUrl: './nav.component.html',
-  styleUrls: ['./nav.component.css']
+  styleUrls: ['./nav.component.css'],
 })
 export class NavComponent implements OnInit {
-
   user: User;
   urlImage = UrlApi.UrlImagesUsers + 'indef.png';
 
-  constructor(private usuarioService: UsuarioService,
-              private toastr: ToastrService,
-              public router: Router) { }
+  constructor(
+    private usuarioService: UsuarioService,
+    private toastr: ToastrService,
+    public router: Router
+  ) {}
 
   ngOnInit(): void {
     if (localStorage.getItem(KeysApp.localStorageJWT) != null) {
       this.SelecionaPerfil();
     }
-
   }
 
-  SelecionaPerfil(): void{
+  SelecionaPerfil(): void {
     this.usuarioService.getUserAuth().subscribe(
       (usuario: User) => {
         this.user = usuario;
         this.trataPerfil();
-      }, error => {
+      },
+      (error) => {
         this.toastr.error(`Erro ao selecionar Perfil: ${error}`);
-      });
+      }
+    );
   }
 
-  trataPerfil(): void{
-    if (this.user && this.user.imagem){
+  trataPerfil(): void {
+    if (this.user && this.user.imagem) {
       this.urlImage = UrlApi.UrlImagesUsers + this.user.imagem;
-    }
-    else{
+    } else {
       this.urlImage = UrlApi.UrlImagesUsers + 'indef.png';
     }
   }

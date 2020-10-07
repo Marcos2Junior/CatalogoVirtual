@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Operation } from 'fast-json-patch';
 import { Observable } from 'rxjs';
 import { User } from '../_models/User';
 import { UrlApi } from '../_utils/urlApi';
@@ -19,7 +20,7 @@ export class UsuarioService {
   }
 
   getUsuarioById(id: number): Observable<User> {
-    return this.http.get<User>(`${UrlApi.UrlUser}/${id}`);
+    return this.http.get<User>(`${UrlApi.UrlUser}${id}`);
   }
 
   postUsuario(user: User) {
@@ -27,11 +28,15 @@ export class UsuarioService {
   }
 
   putUsuario(usuario: User) {
-    return this.http.put(`${UrlApi.UrlUser}/${usuario.id}`, usuario);
+    return this.http.put(`${UrlApi.UrlUser}${usuario.id}`, usuario);
+  }
+
+  patchUsuario(usuario: Operation[], id: number) {
+    return this.http.patch(`${UrlApi.UrlUser}${id}`, usuario);
   }
 
   deleteUsuario(id: number) {
-    return this.http.delete(`${UrlApi.UrlUser}/${id}`);
+    return this.http.delete(`${UrlApi.UrlUser}${id}`);
   }
 
   postUpload(file: File, name: string) {
