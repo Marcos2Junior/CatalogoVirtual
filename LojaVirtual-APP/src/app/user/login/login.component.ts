@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { constants } from 'buffer';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/_services/auth.service';
+import { KeysApp } from 'src/app/_utils/KeysApp';
 
 @Component({
   selector: 'app-login',
@@ -16,8 +18,8 @@ export class LoginComponent implements OnInit {
     private toastr: ToastrService
   ) {}
 
-  ngOnInit() {
-    if (localStorage.getItem('token') != null) {
+  ngOnInit(): void {
+    if (localStorage.getItem(KeysApp.localStorageJWT) != null) {
       this.router.navigate(['/user/perfil']);
     }
   }

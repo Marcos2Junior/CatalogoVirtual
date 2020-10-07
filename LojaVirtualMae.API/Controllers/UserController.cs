@@ -145,7 +145,7 @@ namespace LojaVirtualMae.API.Controllers
             try
             {
                 var file = Request.Form.Files[0];
-                var folderName = Path.Combine("Resources", "images");
+                var folderName = Path.Combine("Resources", "images", "users");
                 var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
 
                 if (file.Length > 0)
@@ -175,14 +175,14 @@ namespace LojaVirtualMae.API.Controllers
         {
             if (usuario.Imagem != null)
             {
-                var fileInfo = new FileInfo(Path.Combine("Resources", "images", usuario.Imagem));
+                var fileInfo = new FileInfo(Path.Combine("Resources", "images", "users", usuario.Imagem));
 
                 if (fileInfo.Exists)
                 {
                     if (!string.IsNullOrEmpty(usuario.UserName))
                     {
-                        usuario.Imagem = $"{usuario.UserName}.{fileInfo.Extension}";
-                        System.IO.File.Move(fileInfo.FullName, Path.Combine("Resources", "images", usuario.Imagem));
+                        usuario.Imagem = $"{usuario.UserName}{fileInfo.Extension}";
+                        System.IO.File.Move(fileInfo.FullName, Path.Combine("Resources", "images", "users", usuario.Imagem));
                         System.IO.File.Delete(fileInfo.FullName);
                     }
                 }

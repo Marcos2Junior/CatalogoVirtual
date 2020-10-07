@@ -9,28 +9,36 @@ import { ModalModule } from 'ngx-bootstrap/modal';
 import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { AppRoutingModule } from './app-routing.module';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { CarouselModule } from 'ngx-bootstrap/carousel';
+
+
 
 import { AuthInterceptor } from './auth/auth.interceptor';
 
 import { AppComponent } from './app.component';
 import { ProdutoComponent } from './produto/produto.component';
-import { NavComponent } from './nav/nav.component';
+import { NavComponent } from './top/nav/nav.component';
 import { UserComponent } from './user/user.component';
 import { LoginComponent } from './user/login/login.component';
 import { RegistrationComponent } from './user/registration/registration.component';
 import { PerfilComponent } from './user/perfil/perfil.component';
+import { TopComponent } from './top/top.component';
+import { CarouselComponent } from './top/carousel/carousel.component';
+
 
 
 @NgModule({
-  declarations: [
+  declarations: [	
     AppComponent,
     ProdutoComponent,
     NavComponent,
     UserComponent,
     LoginComponent,
     RegistrationComponent,
-    PerfilComponent
-  ],
+    PerfilComponent,
+    TopComponent,
+    CarouselComponent
+   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
@@ -42,6 +50,7 @@ import { PerfilComponent } from './user/perfil/perfil.component';
     ModalModule.forRoot(),
     BsDatepickerModule.forRoot(),
     BsDropdownModule.forRoot(),
+    CarouselModule.forRoot(),
     CommonModule
   ],
   providers: [

@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { User } from '../_models/User';
-import { UsuarioService } from '../_services/usuario.service';
+import { User } from '../../_models/User';
+import { UsuarioService } from '../../_services/usuario.service';
+import { KeysApp } from '../../_utils/KeysApp';
+import { UrlApi } from '../../_utils/urlApi';
 
 @Component({
   selector: 'app-nav',
@@ -12,15 +14,14 @@ import { UsuarioService } from '../_services/usuario.service';
 export class NavComponent implements OnInit {
 
   user: User;
-  baseURL = 'http://localhost:53589/resources/images/';
-  urlImage = `${this.baseURL}indef.png`;
+  urlImage = UrlApi.UrlImagesUsers + 'indef.png';
 
   constructor(private usuarioService: UsuarioService,
               private toastr: ToastrService,
               public router: Router) { }
 
   ngOnInit(): void {
-    if (localStorage.getItem('token') != null) {
+    if (localStorage.getItem(KeysApp.localStorageJWT) != null) {
       this.SelecionaPerfil();
     }
 
@@ -38,10 +39,10 @@ export class NavComponent implements OnInit {
 
   trataPerfil(): void{
     if (this.user && this.user.imagem){
-      this.urlImage = `${this.baseURL}${this.user.imagem}`;
+      this.urlImage = UrlApi.UrlImagesUsers + this.user.imagem;
     }
     else{
-      this.urlImage = `${this.baseURL}indef.png`;
+      this.urlImage = UrlApi.UrlImagesUsers + 'indef.png';
     }
   }
 
@@ -50,7 +51,7 @@ export class NavComponent implements OnInit {
   }
 
   logout(): void {
-    localStorage.removeItem('token');
+    localStorage.removeItem(KeysApp.localStorageJWT);
     this.toastr.show('Log Out');
     this.router.navigate(['/user/login']);
     this.user = null;

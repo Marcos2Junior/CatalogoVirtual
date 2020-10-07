@@ -2,37 +2,36 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { User } from '../_models/User';
+import { UrlApi } from '../_utils/urlApi';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UsuarioService {
-  baseURL = 'http://localhost:53589/api/user/';
-
   constructor(private http: HttpClient) {}
 
   getAllUsuario(): Observable<User[]> {
-    return this.http.get<User[]>(this.baseURL);
+    return this.http.get<User[]>(UrlApi.UrlUser);
   }
 
   getUserAuth(): Observable<User> {
-    return this.http.get<User>(`${this.baseURL}auth`);
+    return this.http.get<User>(`${UrlApi.UrlUser}auth`);
   }
 
   getUsuarioById(id: number): Observable<User> {
-    return this.http.get<User>(`${this.baseURL}/${id}`);
+    return this.http.get<User>(`${UrlApi.UrlUser}/${id}`);
   }
 
   postUsuario(user: User) {
-    return this.http.post(this.baseURL, user);
+    return this.http.post(UrlApi.UrlUser, user);
   }
 
   putUsuario(usuario: User) {
-    return this.http.put(`${this.baseURL}/${usuario.id}`, usuario);
+    return this.http.put(`${UrlApi.UrlUser}/${usuario.id}`, usuario);
   }
 
   deleteUsuario(id: number) {
-    return this.http.delete(`${this.baseURL}/${id}`);
+    return this.http.delete(`${UrlApi.UrlUser}/${id}`);
   }
 
   postUpload(file: File, name: string) {
@@ -40,6 +39,6 @@ export class UsuarioService {
     const formData = new FormData();
     formData.append('file', fileToUplaod, name);
 
-    return this.http.post(`${this.baseURL}upload`, formData);
+    return this.http.post(`${UrlApi.UrlUser}upload`, formData);
   }
 }
