@@ -1,9 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { BsModalService } from 'ngx-bootstrap/modal';
 import { ToastrService } from 'ngx-toastr';
 import { User } from 'src/app/_models/User';
 import { UsuarioService } from 'src/app/_services/usuario.service';
-import { compare } from 'fast-json-patch';
+// import { compare } from 'fast-json-patch';
 
 @Component({
   selector: 'app-perfil',
@@ -18,7 +17,6 @@ export class PerfilComponent implements OnInit {
   constructor(
     private usuarioService: UsuarioService,
     private toastr: ToastrService,
-    private modalService: BsModalService
   ) {}
 
   ngOnInit(): void {
@@ -29,7 +27,6 @@ export class PerfilComponent implements OnInit {
     this.usuarioService.getUserAuth().subscribe(
       (x) => {
         this.user = x;
-        this.firstName = this.user.nome.split(' ', 1)[0];
         this.trataUsuario();
       },
       (error) => {
@@ -39,8 +36,9 @@ export class PerfilComponent implements OnInit {
   }
 
   trataUsuario(): void {
-    if (this.user.apelido) {
-      console.log(this.user.apelido);
+    if (!this.user.apelido) {
+      this.firstName = this.user.nome.split(' ', 1)[0];
+      document.getElementById('openModalInit').click();
     }
   }
 

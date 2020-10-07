@@ -1,7 +1,5 @@
 <div
-  bsModal
-  #template="bs-modal"
-  id="exampleModal"
+  id="initModal"
   class="modal"
   tabindex="-1"
   role="dialog"
@@ -54,7 +52,8 @@
           class="btn btn-secondary"
           data-dismiss="modal"
           aria-label="Close"
-          (click)="gravaApelido()">
+          (click)="gravaApelido()"
+        >
           Entendido!
         </button>
       </div>
@@ -62,11 +61,10 @@
   </div>
 </div>
 
-<button
+<input
   type="button"
-  class="btn btn-primary"
+  hidden
+  id="openModalInit"
   data-toggle="modal"
-  data-target="#exampleModal"
->
-  Launch demo modal
-</button>
+  data-target="#initModal"
+/>

@@ -71,7 +71,7 @@ export class ProdutoComponent implements OnInit {
       descontoPorcentagem: ['', [Validators.min(0), Validators.max(100)]],
       estoque: ['0', Validators.required],
       categoria: ['', Validators.required],
-      destaque: ['', Validators.nullValidator],
+      destaque: [],
       ativo: ['', Validators.required],
     });
   }
