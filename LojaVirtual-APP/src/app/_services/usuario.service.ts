@@ -9,7 +9,11 @@ import { UrlApi } from '../_utils/urlApi';
   providedIn: 'root',
 })
 export class UsuarioService {
-  constructor(private http: HttpClient) {}
+
+  user: User;
+
+  constructor(
+    private http: HttpClient) {}
 
   getAllUsuario(): Observable<User[]> {
     return this.http.get<User[]>(UrlApi.UrlUser);

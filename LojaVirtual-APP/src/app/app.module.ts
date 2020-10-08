@@ -16,7 +16,7 @@ import { CarouselModule } from 'ngx-bootstrap/carousel';
 import { AuthInterceptor } from './auth/auth.interceptor';
 
 import { AppComponent } from './app.component';
-import { ProdutoComponent } from './produto/produto.component';
+import { ProdutoComponent } from './admin/produto/produto.component';
 import { NavComponent } from './top/nav/nav.component';
 import { UserComponent } from './user/user.component';
 import { LoginComponent } from './user/login/login.component';
@@ -24,6 +24,8 @@ import { RegistrationComponent } from './user/registration/registration.componen
 import { PerfilComponent } from './user/perfil/perfil.component';
 import { TopComponent } from './top/top.component';
 import { CarouselComponent } from './top/carousel/carousel.component';
+import { CategoriaComponent } from './admin/categoria/categoria.component';
+import { AdminComponent } from './admin/admin.component';
 
 
 
@@ -38,7 +40,9 @@ import { CarouselComponent } from './top/carousel/carousel.component';
     RegistrationComponent,
     PerfilComponent,
     TopComponent,
-    CarouselComponent
+    CarouselComponent,
+    CategoriaComponent,
+    AdminComponent
    ],
   imports: [
     BrowserModule,

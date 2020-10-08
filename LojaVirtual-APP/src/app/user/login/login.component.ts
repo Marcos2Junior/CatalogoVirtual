@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { constants } from 'buffer';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from 'src/app/_services/auth.service';
 import { KeysApp } from 'src/app/_utils/KeysApp';
@@ -28,7 +27,8 @@ export class LoginComponent implements OnInit {
     this.authService.login(this.model).subscribe(
       () => {
         this.router.navigate(['/user/perfil']);
-        this.toastr.success('Logado com Sucesso');
+        this.toastr.success('Logado com sucesso!');
+        document.getElementById('refreshPerfil').click();
       },
       (error) => {
         this.toastr.error('Falha ao tentar Logar');

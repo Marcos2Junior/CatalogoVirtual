@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Categoria } from 'src/app/_models/Categoria';
@@ -14,6 +14,7 @@ import { UrlApi } from '../../_utils/urlApi';
   styleUrls: ['./nav.component.css'],
 })
 export class NavComponent implements OnInit {
+
   user: User;
   urlImage = UrlApi.UrlImagesUsers + 'indef.png';
   categorias: Categoria[];
@@ -22,7 +23,7 @@ export class NavComponent implements OnInit {
     private usuarioService: UsuarioService,
     private categoriaService: CategoriaService,
     private toastr: ToastrService,
-    public router: Router
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -31,14 +32,14 @@ export class NavComponent implements OnInit {
     if (localStorage.getItem(KeysApp.localStorageJWT) != null) {
       this.SelecionaPerfil();
     }
-
   }
 
-  getCategorias(): void{
+  getCategorias(): void {
     this.categoriaService.getCategorias().subscribe(
       (categorias: Categoria[]) => {
         this.categorias = categorias;
-      }, error => {
+      },
+      (error) => {
         this.toastr.error('Ops! Não foi possível carregar as categorias');
       }
     );

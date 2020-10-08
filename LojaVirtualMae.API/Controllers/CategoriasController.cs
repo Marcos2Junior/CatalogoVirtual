@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using LojaVirtualMae.Dominio.DbContexto;
 using LojaVirtualMae.Dominio.Entidades;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LojaVirtualMae.API.Controllers
 {
@@ -23,6 +24,7 @@ namespace LojaVirtualMae.API.Controllers
 
         // GET: api/Categorias
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<Categoria>>> GetCategorias()
         {
             return await _context.Categorias.ToListAsync();

@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
-import { Produto } from '../_models/Produto';
-import { ProdutoService } from '../_services/produto.service';
+import { Produto } from '../../_models/Produto';
+import { ProdutoService } from '../../_services/produto.service';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { CategoriaService } from '../_services/categoria.service';
-import { Categoria } from '../_models/Categoria';
+import { CategoriaService } from '../../_services/categoria.service';
+import { Categoria } from '../../_models/Categoria';
 
 
 @Component({
