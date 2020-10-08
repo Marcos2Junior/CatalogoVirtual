@@ -7,6 +7,7 @@ using LojaVirtualMae.Dominio.Entidades;
 using LojaVirtualMae.Dominio.Interfaces;
 using LojaVirtualMae.API.Modelos;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 
 namespace LojaVirtualMae.API.Controllers
 {
@@ -25,6 +26,7 @@ namespace LojaVirtualMae.API.Controllers
 
         // GET: api/Produtoes
         [HttpGet]
+        [AllowAnonymous]
         public async Task<IActionResult> GetProdutos()
         {
             try
@@ -45,6 +47,7 @@ namespace LojaVirtualMae.API.Controllers
 
         // GET: api/Produtoes/5
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public async Task<IActionResult> GetProduto(int id)
         {
             try
@@ -106,6 +109,8 @@ namespace LojaVirtualMae.API.Controllers
             {
                 var produto = _mapper.Map<Produto>(produtoModelo);
                 produto.DataCadastro = DateTime.Now;
+                produto.CategoriaId = produto.Categoria.Id;
+                produto.Categoria = null;
                 if (await _repositorio.AdicionarAsync(produto))
                 {
                     var produtoModeloRetorno = _mapper.Map<ProdutoModelo>(produto);

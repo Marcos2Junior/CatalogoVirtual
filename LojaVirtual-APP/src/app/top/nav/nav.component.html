@@ -82,24 +82,21 @@
           <li *ngIf="user" class="nav-item dropdown" dropdown>
             <a
               dropdownToggle
-              class="nav-link"
-              id="navbarDropdownMenuLink"
+              class="nav-link p-2"
+              id="userDropDown"
               data-toggle="dropdown"
               aria-haspopup="true"
               aria-expanded="false"
               style="cursor: pointer; text-transform: capitalize"
             >
               <img
-                width="50"
-                height="50"
-                style="border-radius: 50%"
                 src="{{ urlImage }}"
               />
             </a>
             <div
               *dropdownMenu
               class="dropdown-menu"
-              aria-labelledby="navbarDropdownMenuLink"
+              aria-labelledby="userDropDown"
             >
               <a
                 class="dropdown-item"

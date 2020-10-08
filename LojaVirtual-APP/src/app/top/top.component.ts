@@ -8,10 +8,8 @@ import { Component, OnInit } from '@angular/core';
 export class TopComponent implements OnInit {
 
   constructor() { }
-  refresh: number;
   ngOnInit() {
-    this.refresh = Date.now();
-    console.log('passou no top');
+
   }
 
 }

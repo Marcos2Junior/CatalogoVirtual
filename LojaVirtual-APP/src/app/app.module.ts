@@ -10,8 +10,7 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { AppRoutingModule } from './app-routing.module';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
-
-
+import { CurrencyMaskModule } from "ng2-currency-mask";
 
 import { AuthInterceptor } from './auth/auth.interceptor';
 
@@ -58,14 +57,15 @@ import { DestaqueComponent } from './admin/destaque/destaque.component';
     BsDatepickerModule.forRoot(),
     BsDropdownModule.forRoot(),
     CarouselModule.forRoot(),
-    CommonModule
+    CommonModule,
+    CurrencyMaskModule
   ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,
       useClass: AuthInterceptor,
       multi: true,
-    },
+    }
   ],
   bootstrap: [AppComponent],
 })

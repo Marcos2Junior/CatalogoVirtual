@@ -22,6 +22,9 @@ export class ProdutoComponent implements OnInit {
   produtoFiltro: Produto[];
   registerForm: FormGroup;
   modoSalvar: string;
+  tituloModal: string;
+  valorProduto: string;
+  valorAntigo: string;
   _filtroString = '';
   constructor(
       private toastr: ToastrService
@@ -54,19 +57,20 @@ export class ProdutoComponent implements OnInit {
   }
   openModal(template: any) {
     this.registerForm.reset();
+    this.tituloModal = this.modoSalvar === 'post' ? 'Novo Produto' : 'Editar Produto ID: ' + this.produto.id;
     template.show();
   }
 
   editarProduto(produto: Produto, template: any) {
-    this.openModal(template);
-    this.produto = Object.assign({}, produto);
-    this.registerForm.patchValue(this.produto);
     this.modoSalvar = 'put';
+    this.produto = Object.assign({}, produto);
+    this.openModal(template);
+    this.registerForm.patchValue(this.produto);
   }
 
   novoProduto(template: any) {
-    this.openModal(template);
     this.modoSalvar = 'post';
+    this.openModal(template);
   }
 
   salvarProduto(template: any){
@@ -95,10 +99,10 @@ export class ProdutoComponent implements OnInit {
       descricao: ['', [Validators.required, Validators.maxLength(500)]],
       precoAtual: [],
       precoAntigo: [],
-      descontoPorcentagem: [],
-      estoque: ['0'],
+      descontoPorcentagem: ['', [Validators.min(1), Validators.max(100)]],
+      estoque: ['', [Validators.min(0), Validators.max(9999)]],
       destaque: [],
-      ativo: ['true'],
+      ativo: [true],
     });
   }
 
@@ -124,6 +128,6 @@ export class ProdutoComponent implements OnInit {
   }
 
   onSelectCategoria(id: number) {
-    this.categoria = this.categorias.find(x => x.id === id);
+    this.categoria = this.categorias.find(x => x.id == id);
   }
 }
