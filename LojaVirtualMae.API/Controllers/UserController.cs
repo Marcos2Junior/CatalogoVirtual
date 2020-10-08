@@ -202,7 +202,7 @@ namespace LojaVirtualMae.API.Controllers
             }
         }
 
-        private Usuario AlteraImage(Usuario usuario)
+        private Usuario AlteraImage(Usuario usuario, bool excluir = false)
         {
             if (usuario.Imagem != null)
             {
@@ -210,7 +210,11 @@ namespace LojaVirtualMae.API.Controllers
 
                 if (fileInfo.Exists)
                 {
-                    if (!string.IsNullOrEmpty(usuario.UserName))
+                    if(excluir)
+                    {
+                        System.IO.File.Delete(fileInfo.FullName);
+                    }
+                    else if (!string.IsNullOrEmpty(usuario.UserName))
                     {
                         usuario.Imagem = $"{usuario.UserName}{fileInfo.Extension}";
                         System.IO.File.Move(fileInfo.FullName, Path.Combine("Resources", "images", "users", usuario.Imagem));
@@ -232,8 +236,7 @@ namespace LojaVirtualMae.API.Controllers
 
                 user.UserName = await _repositorio.GetNewUserNameAsync(userModel.Nome);
                 user.DataCadastro = DateTime.Now;
-                user = AlteraImage(user);
-
+               
                 bool CPFDuplicado = userModel.CPF != null && await _repositorio.GetUsuarioByCPFAsync(userModel.CPF) != null;
 
                 IEnumerable<IdentityError> identityErrors = null;
@@ -251,6 +254,7 @@ namespace LojaVirtualMae.API.Controllers
                 }
                 else
                 {
+                    user = AlteraImage(user);
                     IdentityResult result = await _userManager.CreateAsync(user, userModel.Password);
 
                     var userToReturn = _mapper.Map<UsuarioViewModel>(user);
@@ -259,6 +263,9 @@ namespace LojaVirtualMae.API.Controllers
                     {
                         return Created("GetUser", userToReturn);
                     }
+
+                    //exclui imagem
+                    _ = AlteraImage(user, true);
 
                     identityErrors = result.Errors;
                 }

@@ -84,6 +84,8 @@ namespace LojaVirtualMae.API
             services.AddScoped<ILojaVirtualMaeRepositorio, LojaVirtualRepositorio>();
             services.AddScoped<IUsuarioRepositorio, UsuarioRepositorio>();
             services.AddScoped<IProdutoRepositorio, ProdutoRepositorio>();
+            services.AddScoped<ICategoriaRepositorio, CategoriaRepositorio>();
+
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 

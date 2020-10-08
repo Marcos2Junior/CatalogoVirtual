@@ -70,7 +70,11 @@
             aria-labelledby="navbarDropdownMenuLink"
           >
             <a class="dropdown-item" routerLink="/admin/produto">Produtos</a>
-            <a class="dropdown-item" routerLink="/admin/categoria">Categorias</a>
+            <a class="dropdown-item" routerLink="/admin/categoria"
+              >Categorias</a
+            >
+            <a class="dropdown-item" routerLink="/admin/destaque">Destaques</a>
+
             <div class="dropdown-divider"></div>
           </div>
         </li>
@@ -119,4 +123,4 @@
     </div>
   </div>
 </nav>
-<input (click)="SelecionaPerfil()" id="refreshPerfil" type="hidden"/>
+<input (click)="ngOnInit()" id="refreshNavBar" type="hidden" />

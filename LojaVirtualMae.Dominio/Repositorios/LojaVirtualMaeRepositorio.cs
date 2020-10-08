@@ -51,5 +51,9 @@ namespace LojaVirtualMae.Dominio.Repositorios
             _lojaContext.RemoveRange(entityarray);
             return await SaveChangesAsync();
         }
+
+        public async Task<List<T>> SelecionarTodosAsync<T>() where T : class 
+            => await _lojaContext.Set<T>().ToListAsync();
+        
     }
 }

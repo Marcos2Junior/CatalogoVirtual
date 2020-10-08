@@ -26,6 +26,7 @@ import { TopComponent } from './top/top.component';
 import { CarouselComponent } from './top/carousel/carousel.component';
 import { CategoriaComponent } from './admin/categoria/categoria.component';
 import { AdminComponent } from './admin/admin.component';
+import { DestaqueComponent } from './admin/destaque/destaque.component';
 
 
 
@@ -42,7 +43,8 @@ import { AdminComponent } from './admin/admin.component';
     TopComponent,
     CarouselComponent,
     CategoriaComponent,
-    AdminComponent
+    AdminComponent,
+      DestaqueComponent
    ],
   imports: [
     BrowserModule,

@@ -28,7 +28,7 @@ export class LoginComponent implements OnInit {
       () => {
         this.router.navigate(['/user/perfil']);
         this.toastr.success('Logado com sucesso!');
-        document.getElementById('refreshPerfil').click();
+        document.getElementById('refreshNavBar').click();
       },
       (error) => {
         this.toastr.error('Falha ao tentar Logar');

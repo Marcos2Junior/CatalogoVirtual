@@ -8,6 +8,7 @@ import { LoginComponent } from './user/login/login.component';
 import { PerfilComponent } from './user/perfil/perfil.component';
 import { RegistrationComponent } from './user/registration/registration.component';
 import { UserComponent } from './user/user.component';
+import { DestaqueComponent } from './admin/destaque/destaque.component';
 
 const routes: Routes = [
   {
@@ -22,7 +23,8 @@ const routes: Routes = [
     path: 'admin', component: AdminComponent, canActivate: [AuthGuard],
     children: [
       { path: 'categoria', component: CategoriaComponent },
-      { path: 'produto', component: ProdutoComponent }
+      { path: 'produto', component: ProdutoComponent },
+      { path: 'destaque', component: DestaqueComponent }
     ]
   }
 ];

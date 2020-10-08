@@ -8,105 +8,81 @@ using Microsoft.EntityFrameworkCore;
 using LojaVirtualMae.Dominio.DbContexto;
 using LojaVirtualMae.Dominio.Entidades;
 using Microsoft.AspNetCore.Authorization;
+using LojaVirtualMae.API.Modelos;
+using AutoMapper;
+using LojaVirtualMae.Dominio.Interfaces;
 
 namespace LojaVirtualMae.API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/categoria")]
     [ApiController]
     public class CategoriasController : ControllerBase
     {
-        private readonly LojaVirtualDbContexto _context;
+        private readonly ICategoriaRepositorio _repo;
+        private readonly IMapper _mapper;
 
-        public CategoriasController(LojaVirtualDbContexto context)
+        public CategoriasController(ICategoriaRepositorio repo, IMapper mapper)
         {
-            _context = context;
+            _repo = repo;
+            _mapper = mapper;
         }
 
         // GET: api/Categorias
         [HttpGet]
         [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<Categoria>>> GetCategorias()
+        public async Task<ActionResult> GetCategorias()
         {
-            return await _context.Categorias.ToListAsync();
-        }
-
-        // GET: api/Categorias/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Categoria>> GetCategoria(int id)
-        {
-            var categoria = await _context.Categorias.FindAsync(id);
-
-            if (categoria == null)
-            {
-                return NotFound();
-            }
-
-            return categoria;
-        }
-
-        // PUT: api/Categorias/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutCategoria(int id, Categoria categoria)
-        {
-            if (id != categoria.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(categoria).State = EntityState.Modified;
-
             try
             {
-                await _context.SaveChangesAsync();
+                var categorias = await _repo.SelecionarTodosAsync<Categoria>();
+                return Ok(_mapper.Map<CategoriaModelo[]>(categorias));
             }
-            catch (DbUpdateConcurrencyException)
+            catch (System.Exception)
             {
-                if (!CategoriaExists(id))
+                return StatusCode(500, "Houve um erro com o processamento dos dados");
+            }
+        }
+
+         [HttpGet("{id}")]
+        public async Task<IActionResult> GetCategoria(int id)
+        {
+            try
+            {
+                var categoria = await _repo.GetCategoriaByIdAsync(id);
+
+                if (categoria == null)
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+
+                return Ok(_mapper.Map<CategoriaModelo>(categoria));
             }
-
-            return NoContent();
-        }
-
-        // POST: api/Categorias
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for
-        // more details, see https://go.microsoft.com/fwlink/?linkid=2123754.
-        [HttpPost]
-        public async Task<ActionResult<Categoria>> PostCategoria(Categoria categoria)
-        {
-            _context.Categorias.Add(categoria);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetCategoria", new { id = categoria.Id }, categoria);
-        }
-
-        // DELETE: api/Categorias/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult<Categoria>> DeleteCategoria(int id)
-        {
-            var categoria = await _context.Categorias.FindAsync(id);
-            if (categoria == null)
+            catch (Exception)
             {
-                return NotFound();
+                return StatusCode(500, "Houve um erro com o processamento dos dados");
             }
-
-            _context.Categorias.Remove(categoria);
-            await _context.SaveChangesAsync();
-
-            return categoria;
         }
 
-        private bool CategoriaExists(int id)
-        {
-            return _context.Categorias.Any(e => e.Id == id);
+        [HttpPost]
+        public async Task<IActionResult> PostCategorias(CategoriaModelo categoriaModelo) {
+
+            try
+            {
+                var categoria = _mapper.Map<Categoria>(categoriaModelo);
+
+                if(await _repo.AdicionarAsync(categoria))
+                {
+                     var categoriaRetorno = _mapper.Map<CategoriaModelo>(categoria);
+
+                    return CreatedAtAction("GetCategorias", new { id = categoria.Id }, categoriaRetorno);
+                }
+
+                return BadRequest();
+            }
+            catch (System.Exception)
+            {
+                return StatusCode(500, "Houve um erro com o processamento dos dados");
+            }
         }
     }
 }

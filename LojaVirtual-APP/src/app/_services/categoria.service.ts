@@ -5,14 +5,16 @@ import { Categoria } from '../_models/Categoria';
 import { UrlApi } from '../_utils/urlApi';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CategoriaService {
+  constructor(private http: HttpClient) {}
 
-constructor(private http: HttpClient) { }
+  getCategorias(): Observable<Categoria[]> {
+    return this.http.get<Categoria[]>(UrlApi.UrlCategoria);
+  }
 
-getCategorias(): Observable<Categoria[]>{
-  return this.http.get<Categoria[]>(UrlApi.UrlCategoria);
-}
-
+  postCategoria(categoria: Categoria) {
+    return this.http.post(UrlApi.UrlCategoria, categoria);
+  }
 }

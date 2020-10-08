@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace LojaVirtualMae.Dominio.Interfaces
 {
@@ -8,5 +9,6 @@ namespace LojaVirtualMae.Dominio.Interfaces
         Task<bool> AtualizarAsync<T>(T entity) where T : class;
         Task<bool> DeletarAsync<T>(T entity) where T : class;
         Task<bool> DeletarRangeAsync<T>(T[] entityarray) where T : class;
+        Task<List<T>> SelecionarTodosAsync<T>() where T : class; 
     }
 }
