@@ -34,10 +34,8 @@
             *dropdownMenu
             class="dropdown-menu"
             aria-labelledby="navbarDropdownMenuLink"
-          >
-            <a class="dropdown-item" href="#"></a>
-            <a class="dropdown-item" href="#"></a>
-            <a class="dropdown-item" href="#">Something else here</a>
+           >
+            <a *ngFor="let categoria of categorias" class="dropdown-item" href="#">{{categoria.nome}}</a>
           </div>
         </li>
         <li class="nav-item">

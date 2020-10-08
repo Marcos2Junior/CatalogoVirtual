@@ -105,7 +105,7 @@ namespace LojaVirtualMae.API.Controllers
             try
             {
                 var produto = _mapper.Map<Produto>(produtoModelo);
-
+                produto.DataCadastro = DateTime.Now;
                 if (await _repositorio.AdicionarAsync(produto))
                 {
                     var produtoModeloRetorno = _mapper.Map<ProdutoModelo>(produto);
