@@ -57,7 +57,7 @@ export class RegistrationComponent implements OnInit {
           confirmPassword: ['', Validators.required],
         },
         { validator: this.compararSenhas }
-      ),
+      )
     });
   }
 

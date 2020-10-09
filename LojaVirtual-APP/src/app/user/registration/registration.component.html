@@ -23,13 +23,14 @@
 </div>
 <div class="form-row">
   <div class="form-group col-md-6">
-    <label for="">CPF:</label
+    <label for="">CPF/CNPJ:</label
       ><i class="fas fa-question-circle float-right" (click)="openModal(template, 5)"></i>
       <input
       class="form-control"
       type="text"
       formControlName="cpf"
-      placeholder="Insira o seu CPF"
+      mask="CPF_CNPJ"
+    placeholder="Insira seu CPF ou CNPJ"
       />
     </div>
 
@@ -53,11 +54,12 @@
         class="form-control"
         type="text"
         formControlName="email"
+        maxlength="100"
         [ngClass]="{
           'is-invalid':
           registerForm.get('email').errors && registerForm.get('email').touched
         }"
-        placeholder="Insira o Nome Completo"
+        placeholder="Insira o seu endereço de E-mail"
         />
         <div
         *ngIf="
@@ -154,6 +156,7 @@ Confirmação não confere
   <div class="form-group col-md-6">
     <label>Telefone Fixo</label>
     <input class="form-control" type="text" formControlName="telefoneFixo"
+    mask="(00) 0000-0000"
     placeholder="(00) 0000-0000"
     [ngClass]="{
       'is-invalid':
@@ -164,6 +167,7 @@ Confirmação não confere
   <div class="form-group col-md-6">
     <label>Telefone móvel</label>
     <input class="form-control" type="text" formControlName="phoneNumber"
+    mask="(00) 00000-0000"
     placeholder="(00) 00000-0000"
     [ngClass]="{
       'is-invalid':
@@ -215,6 +219,7 @@ Confirmação não confere
       />&nbsp;Concordo com os <a class="link-info" (click)="openModal(template, 1)">termos e confições</a>
     </label>
   </div>
+
 
   <div class="form-row">
     <div class="form-group col-md-8 offset-md-2">

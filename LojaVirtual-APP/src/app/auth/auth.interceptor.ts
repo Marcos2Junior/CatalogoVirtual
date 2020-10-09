@@ -20,6 +20,11 @@ export class AuthInterceptor implements HttpInterceptor{
                     succ => {},
                     err => {
                         if (err.status === 401){
+
+                            if (localStorage.getItem(KeysApp.localStorageJWT) != null)
+                            {
+                                localStorage.removeItem(KeysApp.localStorageJWT);
+                            }
                             this.router.navigateByUrl('user/login');
                         }
                     }

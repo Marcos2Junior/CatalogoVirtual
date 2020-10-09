@@ -10,7 +10,8 @@ import { BsDatepickerModule } from 'ngx-bootstrap/datepicker';
 import { AppRoutingModule } from './app-routing.module';
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { CarouselModule } from 'ngx-bootstrap/carousel';
-import { CurrencyMaskModule } from "ng2-currency-mask";
+import { CurrencyMaskModule } from 'ng2-currency-mask';
+import { NgxMaskModule, IConfig } from 'ngx-mask';
 
 import { AuthInterceptor } from './auth/auth.interceptor';
 
@@ -27,8 +28,11 @@ import { CategoriaComponent } from './admin/categoria/categoria.component';
 import { AdminComponent } from './admin/admin.component';
 import { DestaqueComponent } from './admin/destaque/destaque.component';
 
+export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
-
+const maskConfig: Partial<IConfig> = {
+  validation: false,
+};
 
 @NgModule({
   declarations: [
@@ -58,7 +62,8 @@ import { DestaqueComponent } from './admin/destaque/destaque.component';
     BsDropdownModule.forRoot(),
     CarouselModule.forRoot(),
     CommonModule,
-    CurrencyMaskModule
+    CurrencyMaskModule,
+    NgxMaskModule.forRoot(maskConfig)
   ],
   providers: [
     {
