@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ToastrModule, ToastrService } from 'ngx-toastr';
 import { Produto } from '../../_models/Produto';
 import { ProdutoService } from '../../_services/produto.service';
@@ -6,6 +6,8 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { CategoriaService } from '../../_services/categoria.service';
 import { Categoria } from '../../_models/Categoria';
+import { date } from '@rxweb/reactive-form-validators';
+import { element } from 'protractor';
 
 
 @Component({
@@ -18,7 +20,10 @@ export class ProdutoComponent implements OnInit {
   produtos: Produto[];
   produto: Produto;
   categorias: Categoria[];
-  categoria: Categoria;
+  categoriaForm: Categoria;
+  selectDefaultCategoriaForm = true;
+  categoriaSelect: Categoria;
+  selectDefaultCategoriaSelect = true;
   produtoFiltro: Produto[];
   registerForm: FormGroup;
   modoSalvar: string;
@@ -26,12 +31,12 @@ export class ProdutoComponent implements OnInit {
   valorProduto: string;
   valorAntigo: string;
   defaultValue = '0';
+  erroCategoria = false;
   _filtroString = '';
   constructor(
       private toastr: ToastrService
     , private produtoService: ProdutoService
     , private categoriaService: CategoriaService
-    , private modalService: BsModalService
     , private fb: FormBuilder
   ) { }
 
@@ -46,32 +51,42 @@ export class ProdutoComponent implements OnInit {
   }
   set filtroLista(value: string) {
     this._filtroString = value;
-    this.produtoFiltro = this.filtroLista ? this.filtrarProdutos(this._filtroString) : this.produtos;
-
+    this.produtoFiltro = this.filtroLista || this.categoriaSelect ? this.filtrarProdutos(this._filtroString) : this.produtos;
   }
 
-  filtrarProdutos(filtrarPor: string): Produto[] {
-    filtrarPor = filtrarPor.toLocaleLowerCase();
-    return this.produtos.filter(
-      produto => produto.nome.toLocaleLowerCase().indexOf(filtrarPor) !== -1
-    );
+  filtrarProdutos(filtrarPorNome: string): Produto[] {
+    let produtosFiltros = this.produtos;
+
+    if (this.categoriaSelect) {
+        produtosFiltros = this.produtos.filter(produto => produto.categoria.id === this.categoriaSelect.id);
+    }
+
+    if (filtrarPorNome) {
+      filtrarPorNome = filtrarPorNome.toLocaleLowerCase();
+
+      produtosFiltros = produtosFiltros.filter(
+        produto => produto.nome.toLocaleLowerCase().indexOf(filtrarPorNome) !== -1);
+    }
+
+    return produtosFiltros;
   }
-  openModal(template: any) {
+  openModal(template: any): void {
     this.registerForm.reset();
     this.tituloModal = this.modoSalvar === 'post' ? 'Novo Produto' : 'Editar Produto ID: ' + this.produto.id;
     template.show();
   }
 
-  editarProduto(produto: Produto, template: any) {
+  editarProduto(produto: Produto, template: any): void {
     this.modoSalvar = 'put';
     this.produto = Object.assign({}, produto);
     this.openModal(template);
     this.registerForm.patchValue(this.produto);
   }
 
-  novoProduto(template: any) {
+  novoProduto(template: any): void {
     this.modoSalvar = 'post';
-    this.categoria = null;
+    this.onSelectCategoriaForm(0);
+    this.erroCategoria = false;
     this.openModal(template);
 
     this.registerForm.patchValue(
@@ -84,30 +99,35 @@ export class ProdutoComponent implements OnInit {
       });
   }
 
-  salvarProduto(template: any){
-    console.log(this.registerForm.valid);
-    if (this.registerForm.valid && this.categoria) {
+  salvarProduto(template: any): void{
+    if (this.registerForm.valid && this.categoriaForm) {
       if (this.modoSalvar === 'post') {
-        this.produto = Object.assign({ categoria: this.categoria }, this.registerForm.value);
-        console.log(this.produto);
+        this.produto = Object.assign({ categoria: this.categoriaForm }, this.registerForm.value);
         this.produtoService.postProduto(this.produto).subscribe(
           (novoProduto: Produto) => {
             template.hide();
             this.getProdutos();
             this.toastr.success('Inserido com sucesso!');
           }, error => {
-            console.log(error);
             this.toastr.error(`Erro ao inserir: ${error}`);
           }
         );
       }
+
+      this.onSelectCategoriaForm(0);
     }
     else {
+      this.registerForm.markAllAsTouched();
+
+      if (!this.categoriaForm) {
+        this.erroCategoria = true;
+      }
+
       this.toastr.info('Por favor, verique se todos os campos estão preenchidos corretamente');
     }
   }
 
-  validation() {
+  validation(): void {
     this.registerForm = this.fb.group({
       nome: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
       descricao: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(400)]],
@@ -124,7 +144,6 @@ export class ProdutoComponent implements OnInit {
       (Produtos: Produto[]) => {
         this.produtos = Produtos;
         this.produtoFiltro = Produtos;
-        console.log(this.produtos);
       }, error => {
         this.toastr.error(`Erro ao tentar carregar os produtos: ${error}`);
       }
@@ -141,7 +160,29 @@ export class ProdutoComponent implements OnInit {
     );
   }
 
-  onSelectCategoria(id: number) {
-    this.categoria = this.categorias.find(x => x.id == id);
+  onSelectCategoriaForm(id: number): void {
+    this.categoriaForm = this.categorias.find(x => x.id == id);
+
+    if  (id === 0) {
+      this.selectDefaultCategoriaForm = true;
+    }
+    else {
+      this.selectDefaultCategoriaForm = false;
+    }
+    this.erroCategoria = this.categoriaForm ? false : true;
+  }
+
+  onSelectCategoriaFiltro(id: number): void {
+
+    this.categoriaSelect = this.categorias.find(x => x.id == id);
+
+    if  (id === 0) {
+      this._filtroString = '';
+      this.selectDefaultCategoriaSelect = true;
+    }
+    else {
+      this.selectDefaultCategoriaSelect = false;
+    }
+    this.produtoFiltro = this.filtrarProdutos(this._filtroString);
   }
 }
