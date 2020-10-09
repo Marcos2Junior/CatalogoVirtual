@@ -18,4 +18,12 @@ export class ProdutoService {
   postProduto(produto: Produto) {
     return this.http.post(UrlApi.UrlProduto, produto);
   }
+
+  deleteProduto(produto: Produto) {
+    return this.http.delete(UrlApi.UrlProduto + produto.id);
+  }
+
+  putProduto(produto: Produto) {
+    return this.http.put(UrlApi.UrlProduto + produto.id, produto);
+  }
 }
