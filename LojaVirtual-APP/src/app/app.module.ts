@@ -31,7 +31,7 @@ import { DestaqueComponent } from './admin/destaque/destaque.component';
 export const options: Partial<IConfig> | (() => Partial<IConfig>) = null;
 
 const maskConfig: Partial<IConfig> = {
-  validation: false,
+  validation: true
 };
 
 @NgModule({

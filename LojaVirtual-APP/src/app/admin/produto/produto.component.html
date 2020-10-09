@@ -33,17 +33,17 @@
       <td>{{ produto.nome }}</td>
       <td>{{ produto.categoria.nome }}</td>
       <td>
-        <button class="btn btn-info" (click)="editarProduto(produto, template)">
+        <button class="btn btn-sm btn-info" (click)="editarProduto(produto, template)">
           <i class="fas fa-info-circle"></i>
         </button>
       </td>
     </tr>
   </tbody>
-  <!-- <tfoot *ngIf="produto && !produtoFiltro.length">
+   <tfoot *ngIf="produtoFiltro && !produtoFiltro.length">
     <td colspan="6" class="text-center">
       <h4>Nenhum produto encontrado!</h4>
     </td>
-  </tfoot> -->
+  </tfoot>
 </table>
 </div>
 
@@ -78,6 +78,7 @@
               <input
                 type="text"
                 class="form-control"
+                maxlength=50
                 [ngClass]="{
                   'is-invalid':
                     registerForm.get('nome').errors &&
@@ -87,6 +88,22 @@
                 placeholder="Insira o nome do produto"
               />
               <div
+              *ngIf="
+                registerForm.get('nome').hasError('minLength') &&
+                registerForm.get('nome').touched"
+              class="invalid-feedback">
+              Nome deve ter no mínimo 4 caracteres
+            </div>
+            <div
+                *ngIf="
+                  registerForm.get('nome').hasError('maxLength') &&
+                  registerForm.get('nome').touched
+                "
+                class="invalid-feedback"
+              >
+                Nome deve ter no máximo 50 caracteres
+              </div>
+              <div
                 *ngIf="
                   registerForm.get('nome').hasError('required') &&
                   registerForm.get('nome').touched
@@ -95,6 +112,7 @@
               >
                 Nome é obrigatório
               </div>
+
             </div>
           </div>
           <div class="form-row">
@@ -109,6 +127,7 @@
                 }"
                 formControlName="descricao"
                 rows="3"
+                maxlength="400"
                 placeholder="Insira uma descrição para o produto"
               ></textarea>
               <div
@@ -120,6 +139,24 @@
               >
                 Descrição é obrigatória
               </div>
+              <div
+                *ngIf="
+                  registerForm.get('descricao').hasError('minLength') &&
+                  registerForm.get('descricao').touched
+                "
+                class="invalid-feedback"
+              >
+                Descrição deve ter no mínimo 10 caracteres
+              </div>
+              <div
+                *ngIf="
+                  registerForm.get('descricao').hasError('maxLength') &&
+                  registerForm.get('descricao').touched
+                "
+                class="invalid-feedback"
+              >
+                Descrição deve ter no máximo 400 caracteres
+              </div>
             </div>
           </div>
           <div class="form-row">
@@ -130,9 +167,31 @@
                 [(ngModel)]= "valorProduto" [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }"
                 type="text"
                 class="form-control"
+                [ngClass]="{
+                  'is-invalid':
+                    registerForm.get('precoAtual').errors &&
+                    registerForm.get('precoAtual').touched
+                }"
                 formControlName="precoAtual"
-                placeholder="R$ 0.00"
               />
+              <div
+                *ngIf="
+                  registerForm.get('precoAtual').hasError('required') &&
+                  registerForm.get('precoAtual').touched
+                "
+                class="invalid-feedback"
+              >
+               Preço atual é obrigatório
+              </div>
+              <div
+                *ngIf="
+                  registerForm.get('precoAtual').hasError('min') &&
+                  registerForm.get('precoAtual').touched
+                "
+                class="invalid-feedback"
+              >
+               Preço atual não pode ser zero
+              </div>
 
             </div>
             <div class="form-group col-md-6">
@@ -142,27 +201,56 @@
                 [(ngModel)]= "valorAntigo" [options]="{ prefix: 'R$ ', thousands: '.', decimal: ',' }"
                 type="text"
                 class="form-control"
+                [ngClass]="{
+                  'is-invalid':
+                    registerForm.get('precoAntigo').errors &&
+                    registerForm.get('precoAntigo').touched
+                }"
                 formControlName="precoAntigo"
-                placeholder="R$ 0.00"
               />
+              <div
+                *ngIf="
+                  registerForm.get('precoAntigo').hasError('required') &&
+                  registerForm.get('precoAntigo').touched
+                "
+                class="invalid-feedback"
+              >
+               Você deve inserir um preço antigo, caso não exista, deixe zerado.
+              </div>
             </div>
           </div>
           <div class="form-row">
             <div class="form-group col-md-6">
               <label>Desconto %</label>
               <input
-                type="number"
+                type="text"
                 class="form-control"
-
+                [ngClass]="{
+                  'is-invalid':
+                    registerForm.get('descontoPorcentagem').errors &&
+                    registerForm.get('descontoPorcentagem').touched
+                }"
+                mask="percent" suffix="%"
                 formControlName="descontoPorcentagem"
-                placeholder="Existe desconto?"
               />
+              <div
+              *ngIf="
+                registerForm.get('descontoPorcentagem').hasError('required') &&
+                registerForm.get('descontoPorcentagem').touched
+              "
+              class="invalid-feedback"
+            >
+             Você deve inserir um desconto, caso não exista, deixe zerado.
+            </div>
 
             </div>
             <div class="form-group col-md-6">
               <label>Quantidade em Estoque</label>
               <input
-                type="number"
+                type="text"
+                maxlength=4
+                mask="0*"
+                [value]="defaultValue"
                 class="form-control"
                 [ngClass]="{
                   'is-invalid':
@@ -181,15 +269,25 @@
                      registerForm.get('estoque').touched">
                 Estoque não pode ser negativo
               </div>
+              <div
+              *ngIf="
+                registerForm.get('estoque').hasError('required') &&
+                registerForm.get('estoque').touched
+              "
+              class="invalid-feedback"
+            >
+             Você deve inserir um valor para estoque, caso não exista, deixe zerado.
+            </div>
             </div>
           </div>
           <div class="form-row">
             <div class="form-group col-md-6">
               <label>Categoria</label>
-              <select
+              <select required
                 class="form-control"
                 (change)="onSelectCategoria($event.target.value)"
               >
+                <option disabled selected style="display: none;" value="">Seleciona uma categoria</option>
                 <option *ngFor="let categoria of categorias" value={{categoria.id}}>{{categoria.nome}}</option>
 
               </select>
@@ -201,6 +299,7 @@
               <label class="checkbox-inline">
                 <input
                 type="checkbox"
+                checked="checked"
                 formControlName="ativo"
                 />&nbsp;Produto Ativo
               </label>

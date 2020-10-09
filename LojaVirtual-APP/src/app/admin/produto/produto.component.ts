@@ -25,6 +25,7 @@ export class ProdutoComponent implements OnInit {
   tituloModal: string;
   valorProduto: string;
   valorAntigo: string;
+  defaultValue = '0';
   _filtroString = '';
   constructor(
       private toastr: ToastrService
@@ -70,12 +71,22 @@ export class ProdutoComponent implements OnInit {
 
   novoProduto(template: any) {
     this.modoSalvar = 'post';
+    this.categoria = null;
     this.openModal(template);
+
+    this.registerForm.patchValue(
+      {
+        estoque: 0,
+        ativo: true,
+        precoAtual: 0,
+        precoAntigo: 0,
+        descontoPorcentagem: 0
+      });
   }
 
   salvarProduto(template: any){
     console.log(this.registerForm.valid);
-    if (this.registerForm.valid) {
+    if (this.registerForm.valid && this.categoria) {
       if (this.modoSalvar === 'post') {
         this.produto = Object.assign({ categoria: this.categoria }, this.registerForm.value);
         console.log(this.produto);
@@ -91,18 +102,20 @@ export class ProdutoComponent implements OnInit {
         );
       }
     }
+    else {
+      this.toastr.info('Por favor, verique se todos os campos estão preenchidos corretamente');
+    }
   }
 
   validation() {
     this.registerForm = this.fb.group({
       nome: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(50)]],
-      descricao: ['', [Validators.required, Validators.maxLength(500)]],
-      precoAtual: [],
-      precoAntigo: [],
-      descontoPorcentagem: ['', [Validators.min(1), Validators.max(100)]],
-      estoque: ['', [Validators.min(0), Validators.max(9999)]],
-      destaque: [],
-      ativo: [true],
+      descricao: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(400)]],
+      precoAtual: ['', [Validators.required, Validators.min(0.01)]],
+      precoAntigo: ['', [Validators.required]],
+      descontoPorcentagem: ['', [Validators.required]],
+      estoque: ['', [Validators.required, Validators.min(0), Validators.max(9999)]],
+      ativo: ['']
     });
   }
 
@@ -110,6 +123,7 @@ export class ProdutoComponent implements OnInit {
     this.produtoService.getAllProduto().subscribe(
       (Produtos: Produto[]) => {
         this.produtos = Produtos;
+        this.produtoFiltro = Produtos;
         console.log(this.produtos);
       }, error => {
         this.toastr.error(`Erro ao tentar carregar os produtos: ${error}`);

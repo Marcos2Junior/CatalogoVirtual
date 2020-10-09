@@ -9,6 +9,5 @@ export class AppComponent {
   title = 'LojaVirtual-APP';
 
   constructor(){
-    console.log('aouba');
   }
 }
