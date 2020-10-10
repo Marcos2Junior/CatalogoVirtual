@@ -6,3 +6,11 @@
     opacity: 1;
 }
 
+body {
+    background-image: url('http://localhost:5000/Resources/images/app/bg.jpg');
+    background-repeat:no-repeat;
+    background-size:contain;
+    background-position:center;
+    background-size: cover;
+}
+

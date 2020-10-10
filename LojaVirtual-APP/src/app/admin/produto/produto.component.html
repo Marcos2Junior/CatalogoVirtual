@@ -1,7 +1,8 @@
 <div class="container">
-  <div class="border border-dark p-2 bg-dark text-white">
+  <div class="h5">
     <label>Filtrar produtos</label>
-    <button (click)="onSelectCategoriaFiltro(0)" class="btn btn-sm btn-dark float-right"><i class="fas fa-eraser"></i>&nbsp;Limpar</button>
+    <button (click)="onSelectCategoriaFiltro(0)" class="btn btn-sm btn-primary" style="text-align: right;">
+      <i class="fas fa-eraser"></i>&nbsp;Limpar</button>
   <div class="form-row mr-auto">
     <div class="form-group col-6">
       <select required
@@ -30,12 +31,14 @@
     <tr>
       <th>ID</th>
       <th>Nome</th>
+      <th>Descricao</th>
       <th>Opções</th>
     </tr>
   </thead>
   <tbody *ngIf="produtos && produtos.length">
     <tr *ngFor="let produto of produtoFiltro">
       <th>{{ produto.id }}</th>
+      <th>{{ produto.descricao }}</th>
       <td>{{ produto.nome }}</td>
       <td>
         <div class="btn-group">
@@ -57,9 +60,9 @@
 </table>
 </div>
 </div>
-<div class="float-right mt-2">
-  <button class="btn btn-outline-dark" (click)="novoProduto(template)">
-    <i class="fa fa-plus-circle"></i>&nbsp; Adicionar
+<div class="mt-2 mb-3">
+  <button class="btn btn-primary" (click)="novoProduto(template)">
+    <i class="fa fa-plus-circle"></i>&nbsp; Adicionar novo produto
   </button>
 </div>
 </div>
