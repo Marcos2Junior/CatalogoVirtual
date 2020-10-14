@@ -8,23 +8,23 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using AutoMapper;
+using LojaVirtualMae.API.Classes;
 using LojaVirtualMae.API.Modelos;
 using LojaVirtualMae.Dominio.Entidades;
 using LojaVirtualMae.Dominio.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
 namespace LojaVirtualMae.API.Controllers
 {
     [Route("api/user")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController : AcessoController
     {
         private readonly IConfiguration _config;
         private readonly UserManager<Usuario> _userManager;
@@ -36,7 +36,8 @@ namespace LojaVirtualMae.API.Controllers
                               UserManager<Usuario> userManager,
                               SignInManager<Usuario> signInManager,
                               IMapper mapper,
-                              IUsuarioRepositorio usuarioRepositorio)
+                              IUsuarioRepositorio usuarioRepositorio,
+                              ILogger<UserController> logger) : base(logger)
         {
             _signInManager = signInManager;
             _mapper = mapper;
@@ -51,13 +52,23 @@ namespace LojaVirtualMae.API.Controllers
         [HttpGet("auth")]
         public async Task<IActionResult> GetUserAuth()
         {
+            int userId = 0;
             try
             {
-                return Ok(_mapper.Map<UsuarioViewModel>(await _userManager.GetUserAsync(User)));
+                NewLog(nameof(GetUserAuth), 0);
+                var usuario = await _userManager.GetUserAsync(User);
+
+                userId = usuario != null ? usuario.Id : 0;
+
+                NewLog(nameof(GetUserAuth), 4);
+                var usuarioModel = _mapper.Map<UsuarioViewModel>(usuario);
+
+                NewLog(nameof(GetUserAuth), 1);
+                return Ok(usuarioModel);
             }
             catch (Exception ex)
             {
-                return ErrorException(ex);
+                return ErrorException(ex, nameof(GetUserAuth), userId);
             }
         }
         /// <summary>
@@ -70,17 +81,23 @@ namespace LojaVirtualMae.API.Controllers
         {
             try
             {
+                NewLog(nameof(GetAll), 0);
                 var usuarios = await _repositorio.GetAllUsuariosAsync();
                 if (usuarios.Any())
                 {
-                    return Ok(_mapper.Map<UsuarioLoginModelo[]>(usuarios));
+                    NewLog(nameof(GetAll), 4, $"Total de {usuarios.Count} usuarios");
+                    var usersModels = _mapper.Map<UsuarioLoginModelo[]>(usuarios);
+
+                    NewLog(nameof(GetAll), 1);
+                    return Ok(usersModels);
                 }
 
+                NewLog(nameof(GetAll), 2);
                 return NotFound(new UsuarioInsertModel());
             }
             catch (Exception ex)
             {
-                return ErrorException(ex);
+                return ErrorException(ex, nameof(GetAll));
             }
         }
 
@@ -95,18 +112,24 @@ namespace LojaVirtualMae.API.Controllers
         {
             try
             {
+                NewLog(nameof(GetUsuario), 0, $"Id: {id}");
                 var usuario = await _repositorio.GetUsuarioByIdAsync(id);
 
                 if (usuario == null)
                 {
+                    NewLog(nameof(GetUsuario), 2, $"Id: {id} nao identificado");
                     return NotFound();
                 }
 
-                return Ok(_mapper.Map<UsuarioViewModel>(usuario));
+                NewLog(nameof(GetUsuario), 4, $"Id: {id}");
+                var userModel = _mapper.Map<UsuarioViewModel>(usuario);
+
+                NewLog(nameof(GetUsuario), 1, $"Id: {id}");
+                return Ok(userModel);
             }
             catch (Exception ex)
             {
-                return ErrorException(ex);
+                return ErrorException(ex, nameof(GetUsuario), id);
             }
         }
 
@@ -115,28 +138,34 @@ namespace LojaVirtualMae.API.Controllers
         {
             try
             {
+                NewLog(nameof(PatchUsuario), 0, $"Id: {id}");
                 var usuario = await _repositorio.GetUsuarioByIdAsync(id);
 
                 if (usuario != null)
                 {
+                    NewLog(nameof(PatchUsuario), 4, $"Id: {id}");
                     var usuarioModelo = _mapper.Map<UsuarioInsertModel>(usuario);
                     pathUsuarioModelo.ApplyTo(usuarioModelo);
 
                     usuario = _mapper.Map(usuarioModelo, usuario);
 
+                    NewLog(nameof(PatchUsuario), 3, $"Id: {id} iniciando atualizar repositorio");
                     if (await _repositorio.AtualizarAsync(usuario))
                     {
+                        NewLog(nameof(PatchUsuario), 1, $"Id: {id}");
                         return NoContent();
                     }
 
+                    NewLog(nameof(PatchUsuario), 2, $"Id: {id} metodo atualizar repositorio retornou false");
                     return BadRequest();
                 }
 
+                NewLog(nameof(PatchUsuario), 2, $"Id: {id} nao identificado");
                 return NotFound();
             }
             catch (Exception ex)
             {
-                return ErrorException(ex);
+                return ErrorException(ex, nameof(PatchUsuario), id);
             }
         }
 
@@ -145,27 +174,31 @@ namespace LojaVirtualMae.API.Controllers
         {
             try
             {
+                NewLog(nameof(PutUsuario), 0, $"Id: {id}");
                 var usuario = await _repositorio.GetUsuarioByIdAsync(id);
 
                 if (usuario != null)
                 {
+                    NewLog(nameof(PutUsuario), 4, $"Id: {id}");
                     _ = _mapper.Map(usuarioModelo, usuario);
 
+                    NewLog(nameof(PutUsuario), 3, $"Id: {id} iniciando metodo atualizar repositorio");
                     if (await _repositorio.AtualizarAsync(usuario))
                     {
+                        NewLog(nameof(PutUsuario), 1, $"Id: {id}");
                         return NoContent();
                     }
-                    else
-                    {
-                        return BadRequest();
-                    }
+
+                    NewLog(nameof(PutUsuario), 2, $"Id: {id} metodo repositorio retornou false");
+                    return BadRequest();
                 }
 
+                NewLog(nameof(PutUsuario), 2, $"Id: {id} nao identificado");
                 return NotFound();
             }
             catch (Exception ex)
             {
-                return ErrorException(ex);
+                return ErrorException(ex, nameof(PutUsuario), id);
             }
         }
 
@@ -175,6 +208,7 @@ namespace LojaVirtualMae.API.Controllers
         {
             try
             {
+                NewLog(nameof(Upload), 0);
                 var file = Request.Form.Files[0];
                 var folderName = Path.Combine("Resources", "images", "users");
                 var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
@@ -184,21 +218,24 @@ namespace LojaVirtualMae.API.Controllers
                     var filename = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName;
                     var fullPath = Path.Combine(pathToSave, filename.Replace("\"", " ").Trim());
 
+                    NewLog(nameof(Upload), 3, "copiando arquivo");
                     using (var stream = new FileStream(fullPath, FileMode.Create))
                     {
                         file.CopyTo(stream);
                     }
 
+                    NewLog(nameof(Upload), 1);
                     return Ok();
                 }
                 else
                 {
+                    NewLog(nameof(Upload), 2, "Nenhum arquivo identificado");
                     return BadRequest("Erro ao tentar realizar upload");
                 }
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                return this.StatusCode(StatusCodes.Status500InternalServerError, $"Banco Dados Falhou {ex.Message}");
+                return ErrorException(ex, nameof(Upload));
             }
         }
 
@@ -210,7 +247,7 @@ namespace LojaVirtualMae.API.Controllers
 
                 if (fileInfo.Exists)
                 {
-                    if(excluir)
+                    if (excluir)
                     {
                         System.IO.File.Delete(fileInfo.FullName);
                     }
@@ -232,11 +269,14 @@ namespace LojaVirtualMae.API.Controllers
         {
             try
             {
+                NewLog(nameof(Register), 0);
                 var user = _mapper.Map<Usuario>(userModel);
 
+                NewLog(nameof(Register), 3, "Selecionando new userName");
                 user.UserName = await _repositorio.GetNewUserNameAsync(userModel.Nome);
                 user.DataCadastro = DateTime.Now;
-               
+
+                NewLog(nameof(Register), 3, "verificando cpf duplicado");
                 bool CPFDuplicado = userModel.CPF != null && await _repositorio.GetUsuarioByCPFAsync(userModel.CPF) != null;
 
                 IEnumerable<IdentityError> identityErrors = null;
@@ -254,15 +294,23 @@ namespace LojaVirtualMae.API.Controllers
                 }
                 else
                 {
+                    NewLog(nameof(Register), 3, "AlteraImagem");
                     user = AlteraImage(user);
+
+                    NewLog(nameof(Register), 3, "Criando novo usuario");
                     IdentityResult result = await _userManager.CreateAsync(user, userModel.Password);
 
+
+                    NewLog(nameof(Register), 4);
                     var userToReturn = _mapper.Map<UsuarioViewModel>(user);
 
                     if (result.Succeeded)
                     {
+                        NewLog(nameof(Register), 1);
                         return Created("GetUser", userToReturn);
                     }
+
+                    NewLog(nameof(Register), 3, "usuario nao criado, iniciando metodo remover imagem");
 
                     //exclui imagem
                     _ = AlteraImage(user, true);
@@ -282,12 +330,12 @@ namespace LojaVirtualMae.API.Controllers
                     }
                 }
 
-
+                NewLog(nameof(Register), 2);
                 return BadRequest(identityErrors);
             }
             catch (Exception ex)
             {
-                return ErrorException(ex);
+                return ErrorException(ex, nameof(Register));
             }
         }
 
@@ -297,6 +345,7 @@ namespace LojaVirtualMae.API.Controllers
         {
             try
             {
+                NewLog(nameof(Login), 0);
                 bool GetByCPF = !userLoginModel.EmailCPF.Where(x => char.IsLetter(x)).Any();
 
                 Usuario usuario = GetByCPF ?
@@ -305,10 +354,12 @@ namespace LojaVirtualMae.API.Controllers
 
                 if (usuario != null)
                 {
+                    NewLog(nameof(Login), 3, $"Id: {usuario.Id} verificando senha");
                     var result = await _signInManager.CheckPasswordSignInAsync(usuario, userLoginModel.Password, false);
 
                     if (result.Succeeded)
                     {
+                        NewLog(nameof(Login), 1, $"Id: {usuario.Id}");
                         return Ok(new
                         {
                             token = GenerateJWToken(usuario).Result
@@ -316,11 +367,12 @@ namespace LojaVirtualMae.API.Controllers
                     }
                 }
 
+                NewLog(nameof(Login), 2, "nao autorizado");
                 return Unauthorized();
             }
             catch (Exception ex)
             {
-                return ErrorException(ex);
+                return ErrorException(ex, nameof(Login));
             }
         }
 
@@ -359,13 +411,5 @@ namespace LojaVirtualMae.API.Controllers
 
             return token;
         }
-
-        private IActionResult ErrorException(Exception exception)
-        {
-            //adiionar log
-
-            return StatusCode(500, "Ocorreu um erro interno com o tratamento dos dados.");
-        }
-
     }
 }
