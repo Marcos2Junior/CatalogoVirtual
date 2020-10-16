@@ -263,6 +263,19 @@ namespace LojaVirtualMae.API.Controllers
             return usuario;
         }
 
+        [HttpPost("addToRole/{id}")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> AddToRole(int id)
+        {
+            
+                var usuario = await _repositorio.GetUsuarioByIdAsync(id);
+
+                await _userManager.AddToRoleAsync(usuario, "admin");
+
+                return NoContent();
+
+        }
+
         [HttpPost("Register")]
         [AllowAnonymous]
         public async Task<IActionResult> Register(UsuarioInsertModel userModel)

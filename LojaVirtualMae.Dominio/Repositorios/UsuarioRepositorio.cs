@@ -26,7 +26,7 @@ namespace LojaVirtualMae.Dominio.Repositorios
                  .Include(x => x.Prepedido).ToListAsync();
 
         public async Task<Usuario> GetUsuarioByCPFAsync(string cpf) =>
-            await _lojaContext.Users.FirstOrDefaultAsync(x => x.CPF == cpf);
+            await _lojaContext.Users.FirstOrDefaultAsync(x => x.CPF == cpf.Replace("-", "").Replace(".", "").Trim());
 
         public async Task<string> GetNewUserNameAsync(string nome)
         {
